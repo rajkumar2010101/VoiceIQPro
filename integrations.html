@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block title %}Integrations — VoiceIQ Pro{% endblock %}
+{% block page_title %}API Integrations{% endblock %}
+{% block page_sub %}Connect CRM tools, contact center platforms, and NLP APIs{% endblock %}
+
+{% block extra_style %}
+<style>
+.crm-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+@media(max-width:800px){.crm-cards{grid-template-columns:1fr 1fr}}
+.crm-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;text-align:center;cursor:pointer;transition:border-color .2s}
+.crm-card:hover,.crm-card.selected{border-color:var(--accent)}
+.crm-card.selected{background:rgba(99,102,241,.08)}
+.crm-icon{font-size:32px;margin-bottom:8px}
+.crm-name{font-size:13px;font-weight:600;color:#fff}
+.crm-desc{font-size:11px;color:var(--muted);margin-top:4px}
+.connection-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:20px}
+.connection-box h3{font-size:15px;font-weight:600;color:#fff;margin-bottom:6px}
+.connection-box p{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.7}
+.field-map-hint{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:12px;color:var(--muted);font-family:monospace;margin-bottom:14px}
+.connected-card{background:var(--bg2);border:1px solid rgba(34,197,94,.3);border-radius:var(--r);padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px}
+.connected-card .cc-icon{font-size:24px}
+.connected-card .cc-info{flex:1}
+.connected-card .cc-name{font-size:14px;font-weight:600;color:#fff}
+.connected-card .cc-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.status-dot-green{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px}
+.api-doc-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:20px}
+.api-doc-box h4{font-size:13px;font-weight:600;color:#fff;margin-bottom:10px}
+.code-block{background:#0d1117;border:1px solid var(--border);border-radius:7px;padding:14px;font-family:monospace;font-size:12px;color:#a5d6ff;overflow-x:auto;margin-top:8px;line-height:1.7}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HOW TO CONNECT — EXPLAINER -->
+<div class="card" style="margin-bottom:20px">
+  <div class="card-title">📖 How API Connections Work</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <div>
+      <div style="font-size:13px;color:var(--text);font-weight:500;margin-bottom:8px">What is an API connection?</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.8">
+        An API connection lets VoiceIQ Pro automatically pull data from your existing tools
+        (Five9, Salesforce, Zendesk etc.) instead of you manually uploading CSVs.
+        Once connected, conversations flow in automatically in real-time.
+      </p>
+    </div>
+    <div>
+      <div style="font-size:13px;color:var(--text);font-weight:500;margin-bottom:8px">What you need from your CRM</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.8">
+        1. <strong>API Key</strong> — from your CRM's admin settings<br>
+        2. <strong>Endpoint URL</strong> — the data export or webhook URL<br>
+        3. <strong>Field mapping</strong> — which field in your CRM = customer_message
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- PROVIDER SELECTOR -->
+<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Choose a Platform to Connect</div>
+<div class="crm-cards">
+  <div class="crm-card" onclick="selectProvider('five9','crm')">
+    <div class="crm-icon">📞</div>
+    <div class="crm-name">Five9</div>
+    <div class="crm-desc">Cloud contact center</div>
+  </div>
+  <div class="crm-card" onclick="selectProvider('salesforce','crm')">
+    <div class="crm-icon">☁️</div>
+    <div class="crm-name">Salesforce</div>
+    <div class="crm-desc">CRM & Service Cloud</div>
+  </div>
+  <div class="crm-card" onclick="selectProvider('zendesk','crm')">
+    <div class="crm-icon">🎟️</div>
+    <div class="crm-name">Zendesk</div>
+    <div class="crm-desc">Support tickets</div>
+  </div>
+  <div class="crm-card" onclick="selectProvider('freshdesk','crm')">
+    <div class="crm-icon">🌿</div>
+    <div class="crm-name">Freshdesk</div>
+    <div class="crm-desc">Customer support</div>
+  </div>
+  <div class="crm-card" onclick="selectProvider('genesys','crm')">
+    <div class="crm-icon">🌐</div>
+    <div class="crm-name">Genesys</div>
+    <div class="crm-desc">Omnichannel platform</div>
+  </div>
+  <div class="crm-card" onclick="selectProvider('custom','crm')">
+    <div class="crm-icon">⚙️</div>
+    <div class="crm-name">Custom / Other</div>
+    <div class="crm-desc">Any REST API</div>
+  </div>
+</div>
+
+<!-- CONNECTION FORM -->
+<div class="connection-box" id="connectForm" style="display:none">
+  <h3 id="formTitle">Connect Platform</h3>
+  <p>Fill in your API credentials. The key is never stored in full — only the last 4 characters are saved for identification.</p>
+  <form action="/integrations/add" method="POST">
+    <input type="hidden" name="provider" id="providerField">
+    <input type="hidden" name="api_type" id="typeField" value="crm">
+    <div class="form-group">
+      <label>Connection Name (your label)</label>
+      <input class="form-control" name="name" placeholder="e.g. Five9 Production" required>
+    </div>
+    <div class="form-group">
+      <label>API Key / Token</label>
+      <input class="form-control" name="api_key" type="password" placeholder="Paste your API key here" required>
+      <div style="font-size:11px;color:var(--muted);margin-top:5px">🔒 Only the last 4 characters will be stored</div>
+    </div>
+    <div class="form-group">
+      <label>Endpoint URL (where VoiceIQ should fetch data from)</label>
+      <input class="form-control" name="endpoint_url" placeholder="https://api.yourcrm.com/v1/tickets/export" id="endpointField">
+      <div style="font-size:11px;color:var(--muted);margin-top:5px" id="endpointHint"></div>
+    </div>
+    <div class="form-group">
+      <label>Field Mapping — which field in your CRM contains the customer message?</label>
+      <div class="field-map-hint" id="fieldMapHint">{"customer_message": "body", "agent": "assignee_name", "date": "created_at"}</div>
+      <textarea class="form-control" name="field_map" id="fieldMapInput" rows="3" placeholder='{"customer_message": "body", "agent": "assignee_name"}'></textarea>
+      <div style="font-size:11px;color:var(--muted);margin-top:5px">Left = VoiceIQ field name, Right = your CRM's field name</div>
+    </div>
+    <button type="submit" class="btn btn-success">🔌 Save Connection</button>
+    <button type="button" class="btn btn-ghost" onclick="document.getElementById('connectForm').style.display='none'" style="margin-left:8px">Cancel</button>
+  </form>
+</div>
+
+<!-- EXISTING CONNECTIONS -->
+{% if configs %}
+<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Active Connections</div>
+{% for cfg in configs %}
+<div class="connected-card">
+  <div class="cc-icon">🔌</div>
+  <div class="cc-info">
+    <div class="cc-name"><span class="status-dot-green"></span>{{ cfg.name }}</div>
+    <div class="cc-meta">{{ cfg.provider.title() }} · {{ cfg.api_type.upper() }} · Key: {{ cfg.api_key_hint }} · Added {{ cfg.created_at.strftime('%d %b %Y') }}</div>
+  </div>
+  <button class="btn btn-ghost" onclick="testConn({{ cfg.id }})">🧪 Test</button>
+  <form method="POST" action="/integrations/delete/{{ cfg.id }}" style="display:inline" onsubmit="return confirm('Remove this connection?')">
+    <button class="btn btn-danger" type="submit">🗑️ Remove</button>
+  </form>
+</div>
+{% endfor %}
+<div id="testResult" style="font-size:13px;color:var(--green);margin-top:8px"></div>
+{% else %}
+<div style="text-align:center;padding:30px;color:var(--muted);border:1px dashed var(--border);border-radius:var(--r)">
+  No connections yet — select a platform above to add your first integration.
+</div>
+{% endif %}
+
+<!-- INCOMING API DOCS -->
+<div class="api-doc-box">
+  <h4>📥 Push Data INTO VoiceIQ — Ingest API</h4>
+  <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px">
+    Your contact center can also push individual conversations to VoiceIQ in real-time using a simple POST request.
+    This works for any platform that supports webhooks or HTTP callbacks.
+  </p>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Endpoint: <code style="color:var(--accent)">POST {{ request.host_url }}api/ingest</code></div>
+  <div class="code-block">
+curl -X POST {{ request.host_url }}api/ingest \<br>
+&nbsp; -H "Content-Type: application/json" \<br>
+&nbsp; -H "X-API-Key: YOUR_API_KEY" \<br>
+&nbsp; -d '{<br>
+&nbsp;&nbsp;&nbsp; "customer_message": "My refund has not arrived in 3 weeks!",<br>
+&nbsp;&nbsp;&nbsp; "agent": "Agent_Priya",<br>
+&nbsp;&nbsp;&nbsp; "channel": "Phone",<br>
+&nbsp;&nbsp;&nbsp; "date": "2024-03-15"<br>
+&nbsp; }'
+  </div>
+  <div style="font-size:12px;color:var(--muted);margin-top:10px">Response:</div>
+  <div class="code-block">
+{"sentiment":"negative","emotion":"frustrated","topic":"Refund Delay",<br>
+ "escalation_level":"HIGH","escalation_score":72,"status":"analyzed"}
+  </div>
+</div>
+
+<script>
+const ENDPOINTS = {
+  five9: 'https://app.five9.com/supsvcs/rs/svc/orgs/{ORG_ID}/interactions',
+  salesforce: 'https://yourinstance.salesforce.com/services/data/v57.0/query/',
+  zendesk: 'https://yoursubdomain.zendesk.com/api/v2/tickets.json',
+  freshdesk: 'https://yourdomain.freshdesk.com/api/v2/tickets',
+  genesys: 'https://api.mypurecloud.com/api/v2/analytics/conversations/details',
+  custom: '',
+};
+const MAPS = {
+  five9: '{"customer_message": "transcription", "agent": "agentName", "date": "timestamp"}',
+  salesforce: '{"customer_message": "Description", "agent": "OwnerId", "date": "CreatedDate"}',
+  zendesk: '{"customer_message": "description", "agent": "assignee_id", "date": "created_at"}',
+  freshdesk: '{"customer_message": "description", "agent": "responder_id", "date": "created_at"}',
+  genesys: '{"customer_message": "messageText", "agent": "userId", "date": "conversationStart"}',
+  custom: '{"customer_message": "your_field_name"}',
+};
+const HINTS = {
+  five9: 'Find in Five9: Admin → REST API → copy Org ID',
+  salesforce: 'Find in Salesforce: Setup → Security → API → Connected Apps',
+  zendesk: 'Find in Zendesk: Admin → API → API token',
+  freshdesk: 'Find in Freshdesk: Profile → API Key',
+  genesys: 'Find in Genesys Cloud: Admin → OAuth → Client Credentials',
+  custom: 'Enter the full URL your API exports data from',
+};
+
+function selectProvider(provider, type){
+  document.querySelectorAll('.crm-card').forEach(c=>c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('providerField').value = provider;
+  document.getElementById('typeField').value = type;
+  document.getElementById('formTitle').textContent = 'Connect ' + event.currentTarget.querySelector('.crm-name').textContent;
+  document.getElementById('endpointField').value = ENDPOINTS[provider] || '';
+  document.getElementById('endpointHint').textContent = HINTS[provider] || '';
+  document.getElementById('fieldMapHint').textContent = MAPS[provider] || '';
+  document.getElementById('fieldMapInput').value = MAPS[provider] || '';
+  document.getElementById('connectForm').style.display = 'block';
+  document.getElementById('connectForm').scrollIntoView({behavior:'smooth'});
+}
+
+async function testConn(id){
+  const res = await fetch('/integrations/test/'+id);
+  const d = await res.json();
+  document.getElementById('testResult').textContent = d.status==='ok' ? '✅ '+d.message : '❌ '+d.message;
+}
+</script>
+{% endblock %}

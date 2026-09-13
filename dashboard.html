@@ -1,0 +1,552 @@
+{% extends "base.html" %}
+{% block title %}Analysis Dashboard — VoiceIQ Pro{% endblock %}
+{% block page_title %}Analysis Dashboard{% endblock %}
+{% block page_sub %}{{ label }} · Generated {{ generated_at }}{% endblock %}
+
+{% block extra_style %}
+<style>
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px}
+@media(max-width:900px){.kpi-strip{grid-template-columns:repeat(3,1fr)}}
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+@media(max-width:700px){.insight-grid{grid-template-columns:1fr}}
+.charts-4{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:800px){.charts-4{grid-template-columns:1fr}}
+.chart-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;min-height:340px}
+.chart-box h4{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+.rec-card{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:10px}
+.rec-text{font-size:13px;color:var(--text);line-height:1.6;margin-bottom:6px}
+.agent-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.agent-bar-track{flex:1;height:7px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.agent-bar-fill{height:100%;border-radius:4px}
+.search-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-row input,.search-row select{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 13px;color:var(--text);font-size:13px}
+.search-row input{flex:1;min-width:160px}
+.absa-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;font-size:11px}
+.absa-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:4px}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- KPI STRIP -->
+<div class="kpi-strip">
+  <div class="kpi {% if pos_pct > 50 %}border-green{% elif neg_pct > 50 %}border-red{% else %}border-amber{% endif %}">
+    <div class="k-label">Total Conversations</div>
+    <div class="k-val">{{ n }}</div>
+    <div class="k-sub">analyzed this session</div>
+  </div>
+  <div class="kpi {% if pos_pct > 50 %}border-green{% else %}border-amber{% endif %}">
+    <div class="k-label">Positive Sentiment</div>
+    <div class="k-val {% if pos_pct > 50 %}green{% elif pos_pct > 35 %}amber{% else %}red{% endif %}">{{ pos_pct }}%</div>
+  </div>
+  <div class="kpi {% if neg_pct > 45 %}border-red{% else %}border-amber{% endif %}">
+    <div class="k-label">Negative Sentiment</div>
+    <div class="k-val {% if neg_pct > 45 %}red{% elif neg_pct > 30 %}amber{% else %}green{% endif %}">{{ neg_pct }}%</div>
+  </div>
+  <div class="kpi {% if high_esc > n * 0.2 %}border-red{% elif high_esc > n * 0.1 %}border-amber{% else %}border-green{% endif %}">
+    <div class="k-label">High Escalation Risk</div>
+    <div class="k-val {% if high_esc > n * 0.2 %}red{% elif high_esc > n * 0.1 %}amber{% else %}green{% endif %}">{{ high_esc }}</div>
+  </div>
+  <div class="kpi {% if avg_csat != 'N/A' and avg_csat >= 3.5 %}border-green{% elif avg_csat != 'N/A' %}border-amber{% endif %}">
+    <div class="k-label">Avg CSAT</div>
+    <div class="k-val {% if avg_csat != 'N/A' and avg_csat >= 3.5 %}green{% elif avg_csat != 'N/A' %}amber{% endif %}">
+      {% if avg_csat != 'N/A' %}{{ avg_csat }}<span style="font-size:14px;font-weight:400;color:var(--muted)">/5</span>{% else %}N/A{% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- ACTIVE ALERTS from threshold check -->
+{% if active_alerts %}
+{% for alert in active_alerts %}
+<div class="alert-banner {{ alert.severity }}">
+  {{ '🚨' if alert.severity=='critical' else '⚠️' }} <strong>{{ alert.label }}</strong> — Current value: {{ alert.value }}%
+</div>
+{% endfor %}
+{% endif %}
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('overview',this)">📊 Overview</button>
+  <button class="tab" onclick="showTab('absa',this)">🔍 Aspect Analysis</button>
+  <button class="tab" onclick="showTab('topics',this)">🏷️ Topics</button>
+  <button class="tab" onclick="showTab('escalation',this)">⚠️ Escalation</button>
+  <button class="tab" onclick="showTab('agents',this)">👤 Agents</button>
+  <button class="tab" onclick="showTab('genai',this)">🤖 GenAI Insights</button>
+  <button class="tab" onclick="showTab('explorer',this)">🔍 Explorer</button>
+</div>
+
+<!-- ═══ OVERVIEW ═══ -->
+<div class="panel active" id="panel-overview">
+  <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px">AI Business Insights</div>
+  <div class="insight-grid">
+    {% for ins in insights %}
+    <div class="insight {{ ins.level }}">
+      <div class="i-title">{{ ins.icon }} {{ ins.title }}</div>
+      <div class="i-body">{{ ins.body }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- 4 INTERACTIVE CHARTS -->
+  <div class="charts-4">
+    <div class="chart-box">
+      <h4>Sentiment Distribution — 3D Perspective</h4>
+      <div id="chart3dSentiment" style="height:300px"></div>
+    </div>
+    <div class="chart-box">
+      <h4>Emotion Radar — Multi-Dimension</h4>
+      <div id="chartEmotionRadar" style="height:300px"></div>
+    </div>
+    <div class="chart-box">
+      <h4>Weekly Sentiment Trend — Area</h4>
+      <div id="chartTrendArea" style="height:300px"></div>
+    </div>
+    <div class="chart-box">
+      <h4>Escalation Score Distribution — 3D Histogram</h4>
+      <div id="chart3dEscalation" style="height:300px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ASPECT-BASED SENTIMENT ═══ -->
+<div class="panel" id="panel-absa">
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">🔍 Aspect-Based Sentiment Analysis — What part of the experience is causing the sentiment?</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.7">
+      Regular sentiment tells you <em>how</em> customers feel. Aspect analysis tells you <em>why</em> —
+      which specific part (agent behavior, wait time, billing, product) is driving satisfaction or dissatisfaction.
+    </p>
+    <div id="chartABSA" style="height:380px"></div>
+  </div>
+  {% if charts.absa %}
+  <div class="card">
+    <div class="card-title">Static Aspect Breakdown</div>
+    <img src="data:image/png;base64,{{ charts.absa }}" style="width:100%;border-radius:8px">
+  </div>
+  {% endif %}
+</div>
+
+<!-- ═══ TOPICS ═══ -->
+<div class="panel" id="panel-topics">
+  <div class="charts-4">
+    <div class="chart-box" style="grid-column:span 2">
+      <h4>Top Customer Issues — Interactive Bar</h4>
+      <div id="chartTopics" style="height:300px"></div>
+    </div>
+    <div class="chart-box">
+      <h4>Issue Priority Breakdown — Sunburst</h4>
+      <div id="chartPriority" style="height:300px"></div>
+    </div>
+    <div class="chart-box">
+      <h4>Channel vs Sentiment — Heatmap</h4>
+      <div id="chartHeatmap" style="height:300px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ESCALATION ═══ -->
+<div class="panel" id="panel-escalation">
+  <div class="charts-4">
+    <div class="chart-box">
+      <h4>Escalation Risk Levels</h4>
+      <div id="chartEscLevels" style="height:300px"></div>
+    </div>
+    <div class="chart-box">
+      <h4>Escalation by Topic — Bubble Chart</h4>
+      <div id="chartEscBubble" style="height:300px"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🔴 High Risk Conversations</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          {% if high_risk_rows and 'conversation_id' in high_risk_rows[0] %}<th>ID</th>{% endif %}
+          <th>Message</th><th>Topic</th><th>Emotion</th><th>Score</th>
+        </tr></thead>
+        <tbody>
+          {% for row in high_risk_rows %}
+          <tr>
+            {% if 'conversation_id' in row %}<td style="font-family:monospace;font-size:11px;color:var(--muted)">{{ row.conversation_id }}</td>{% endif %}
+            <td class="truncate">{{ row.customer_message }}</td>
+            <td><span class="pill info">{{ row.topic }}</span></td>
+            <td>{{ row.emotion }}</td>
+            <td><strong class="red">{{ row.escalation_score }}</strong></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5" style="color:var(--muted);padding:20px">No high-risk conversations.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ AGENTS ═══ -->
+<div class="panel" id="panel-agents">
+  {% if charts.agent %}
+  <div class="chart-box" style="margin-bottom:16px">
+    <h4>Agent CSAT Performance</h4>
+    <img src="data:image/png;base64,{{ charts.agent }}" style="width:100%;border-radius:8px">
+  </div>
+  {% endif %}
+  {% if scorecards %}
+  <div class="card">
+    <div class="card-title">Agent Scorecards</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Agent</th><th>Interactions</th><th>Avg CSAT</th><th>Resolution</th><th>Escalation Rate</th><th>Neg Sentiment</th><th>Performance Score</th></tr></thead>
+        <tbody>
+          {% for a in scorecards %}
+          <tr>
+            <td><strong>{{ a.agent }}</strong></td>
+            <td>{{ a.interactions }}</td>
+            <td>{{ a.avg_csat }}</td>
+            <td>{{ a.resolution_rate }}</td>
+            <td><span class="pill {% if a.escalation_rate|replace('%','')|int > 25 %}high{% elif a.escalation_rate|replace('%','')|int > 15 %}med{% else %}low{% endif %}">{{ a.escalation_rate }}</span></td>
+            <td>{{ a.neg_sentiment }}</td>
+            <td>
+              <div class="agent-bar">
+                <div class="agent-bar-track"><div class="agent-bar-fill" style="width:{{ a.performance_score }}%;background:{% if a.performance_score >= 70 %}var(--green){% elif a.performance_score >= 50 %}var(--amber){% else %}var(--red){% endif %}"></div></div>
+                <strong>{{ a.performance_score }}</strong>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="card"><p style="color:var(--muted);font-size:13px;padding:20px">Add an <code>agent</code> column to your CSV for agent performance analytics.</p></div>
+  {% endif %}
+</div>
+
+<!-- ═══ GENAI INSIGHTS ═══ -->
+<div class="panel" id="panel-genai">
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">🤖 GenAI Executive Summary & SL Recommendations</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.7">
+      Real-time AI recommendations for management — what actions to take right now to balance Service Level and customer satisfaction.
+    </p>
+    {% for rec in ai_recs %}
+    <div class="rec-card">
+      <div class="rec-text">{{ rec.rec }}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="pill {% if rec.urgency=='critical' %}high{% elif rec.urgency=='high' %}neg{% elif rec.urgency=='medium' %}med{% else %}low{% endif %}">{{ rec.urgency.upper() }}</span>
+        <span class="pill info">{{ rec.action }}</span>
+        {% if rec.impact %}<span style="font-size:11px;color:var(--muted);margin-left:4px">📈 {{ rec.impact }}</span>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ═══ EXPLORER ═══ -->
+<div class="panel" id="panel-explorer">
+  <div class="search-row">
+    <input type="text" id="searchInput" placeholder="Search conversations..." oninput="filterTable()">
+    <select id="sentFilter" onchange="filterTable()">
+      <option value="">All sentiments</option>
+      <option value="positive">Positive</option><option value="neutral">Neutral</option><option value="negative">Negative</option>
+    </select>
+    <select id="escFilter" onchange="filterTable()">
+      <option value="">All escalation</option>
+      <option value="HIGH">HIGH</option><option value="MEDIUM">MEDIUM</option><option value="LOW">LOW</option>
+    </select>
+  </div>
+  <div class="card">
+    <div class="tbl-wrap">
+      <table id="explorerTable">
+        <thead><tr>
+          {% if explorer and 'conversation_id' in explorer[0] %}<th>ID</th>{% endif %}
+          {% if explorer and 'date' in explorer[0] %}<th>Date</th>{% endif %}
+          {% if explorer and 'agent' in explorer[0] %}<th>Agent</th>{% endif %}
+          {% if explorer and 'channel' in explorer[0] %}<th>Channel</th>{% endif %}
+          <th>Message</th><th>Sentiment</th><th>Emotion</th><th>Topic</th><th>Escalation</th>
+          {% if explorer and 'csat_score' in explorer[0] %}<th>CSAT</th>{% endif %}
+        </tr></thead>
+        <tbody id="explorerBody">
+          {% for row in explorer %}
+          <tr data-sent="{{ row.sentiment|default('') }}" data-esc="{{ row.escalation_level|default('') }}">
+            {% if 'conversation_id' in row %}<td style="font-family:monospace;font-size:10px;color:var(--muted)">{{ row.conversation_id }}</td>{% endif %}
+            {% if 'date' in row %}<td style="font-size:11px;white-space:nowrap">{{ row.date }}</td>{% endif %}
+            {% if 'agent' in row %}<td style="font-size:12px">{{ row.agent }}</td>{% endif %}
+            {% if 'channel' in row %}<td><span class="pill info" style="font-size:10px">{{ row.channel }}</span></td>{% endif %}
+            <td class="truncate">{{ row.customer_message }}</td>
+            <td><span class="pill {{ 'pos' if row.sentiment=='positive' else 'neg' if row.sentiment=='negative' else 'neu' }}">{{ row.sentiment }}</span></td>
+            <td style="font-size:12px">{{ row.emotion }}</td>
+            <td style="font-size:12px">{{ row.topic }}</td>
+            <td><span class="pill {{ 'high' if row.escalation_level=='HIGH' else 'med' if row.escalation_level=='MEDIUM' else 'low' }}">{{ row.escalation_level }}</span></td>
+            {% if 'csat_score' in row %}<td style="text-align:center;font-size:12px">{{ row.csat_score }}</td>{% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:10px">Showing first 100 conversations.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script>
+// ── Data from Flask ──────────────────────────────────────────────────────────
+const explorerData = {{ explorer | tojson }};
+
+const DARK = {
+  paper_bgcolor:'#0d1117', plot_bgcolor:'#161b22',
+  font:{color:'#8b949e', size:11},
+  margin:{t:20,b:40,l:50,r:20},
+  showlegend:true,
+  legend:{font:{color:'#e6edf3',size:11},bgcolor:'rgba(0,0,0,0)',bordercolor:'rgba(0,0,0,0)'},
+  colorway:['#6366f1','#22c55e','#ef4444','#f59e0b','#a78bfa','#3b82f6','#10b981','#f97316'],
+};
+const config = {responsive:true, displayModeBar:false};
+
+function applyDark(layout){ return Object.assign({}, DARK, layout); }
+
+// ── 1. 3D Sentiment Donut (with 3D rotation effect using Plotly) ─────────────
+(function(){
+  const sent = explorerData.reduce((acc,r)=>{acc[r.sentiment]=(acc[r.sentiment]||0)+1;return acc;},{});
+  const labels = Object.keys(sent), values = Object.values(sent);
+  const colors = labels.map(l=>l==='positive'?'#22c55e':l==='negative'?'#ef4444':'#f59e0b');
+
+  Plotly.newPlot('chart3dSentiment', [{
+    type:'pie', labels, values,
+    marker:{colors, line:{color:'#0d1117',width:3}},
+    hole:0.45, pull:[0.04,0.04,0.04],
+    textinfo:'label+percent',
+    textfont:{color:'#e6edf3',size:12},
+    hovertemplate:'<b>%{label}</b><br>Count: %{value}<br>%{percent}<extra></extra>',
+    rotation:45,
+  }], applyDark({
+    margin:{t:10,b:10,l:10,r:10},
+    annotations:[{text:'Sentiment',x:0.5,y:0.5,showarrow:false,font:{size:13,color:'#8b949e'}}],
+    showlegend:true,
+  }), config);
+})();
+
+// ── 2. Emotion Radar Chart ────────────────────────────────────────────────────
+(function(){
+  const emos = ['angry','frustrated','confused','anxious','neutral','happy','satisfied'];
+  const emotionCounts = explorerData.reduce((acc,r)=>{acc[r.emotion]=(acc[r.emotion]||0)+1;return acc;},{});
+  const values = emos.map(e=>(emotionCounts[e]||0));
+  const maxV = Math.max(...values) || 1;
+  const normalized = values.map(v=>v/maxV);
+
+  Plotly.newPlot('chartEmotionRadar', [{
+    type:'scatterpolar', r:[...normalized, normalized[0]],
+    theta:[...emos, emos[0]],
+    fill:'toself', name:'Emotion Mix',
+    fillcolor:'rgba(99,102,241,0.25)',
+    line:{color:'#6366f1',width:2},
+    marker:{color:'#6366f1',size:6},
+    hovertemplate:'<b>%{theta}</b><br>Count: ' + values.map((v,i)=>v).join('<br>') + '<extra></extra>',
+  }], applyDark({
+    polar:{
+      bgcolor:'#161b22',
+      radialaxis:{visible:true, range:[0,1], gridcolor:'#30363d', color:'#8b949e', tickfont:{size:9}},
+      angularaxis:{gridcolor:'#30363d', color:'#8b949e', tickfont:{size:10}},
+    },
+    showlegend:false, margin:{t:20,b:20,l:40,r:40},
+  }), config);
+})();
+
+// ── 3. Weekly Trend Area Chart ────────────────────────────────────────────────
+(function(){
+  if(!explorerData[0]?.date){ document.getElementById('chartTrendArea').innerHTML='<div style="color:var(--muted);padding:40px;text-align:center;font-size:13px">Add a date column for trend analysis</div>'; return; }
+  const byWeek={};
+  explorerData.forEach(r=>{
+    if(!r.date) return;
+    const w = r.date.slice(0,7); // YYYY-MM
+    if(!byWeek[w]) byWeek[w]={positive:0,neutral:0,negative:0};
+    byWeek[w][r.sentiment] = (byWeek[w][r.sentiment]||0)+1;
+  });
+  const weeks = Object.keys(byWeek).sort();
+  const traces = [
+    {name:'Negative',y:weeks.map(w=>byWeek[w].negative||0),x:weeks,type:'scatter',mode:'lines',fill:'tozeroy',fillcolor:'rgba(239,68,68,0.15)',line:{color:'#ef4444',width:2}},
+    {name:'Neutral', y:weeks.map(w=>byWeek[w].neutral||0), x:weeks,type:'scatter',mode:'lines',fill:'tozeroy',fillcolor:'rgba(245,158,11,0.12)',line:{color:'#f59e0b',width:2}},
+    {name:'Positive',y:weeks.map(w=>byWeek[w].positive||0),x:weeks,type:'scatter',mode:'lines',fill:'tozeroy',fillcolor:'rgba(34,197,94,0.15)',line:{color:'#22c55e',width:2}},
+  ];
+  Plotly.newPlot('chartTrendArea', traces, applyDark({
+    xaxis:{gridcolor:'#30363d',tickangle:-30,tickfont:{size:9}},
+    yaxis:{gridcolor:'#30363d',title:{text:'Conversations',font:{size:10,color:'#8b949e'}}},
+    hovermode:'x unified',
+  }), config);
+})();
+
+// ── 4. 3D Escalation Histogram ────────────────────────────────────────────────
+(function(){
+  const escScores = explorerData.map(r=>r.escalation_score||0);
+  const bins = {};
+  escScores.forEach(s=>{ const b=Math.floor(s/10)*10; bins[b]=(bins[b]||0)+1; });
+  const x3d=[], y3d=[], z3d=[];
+  Object.entries(bins).sort((a,b)=>+a[0]-+b[0]).forEach(([score,count])=>{
+    x3d.push(+score); y3d.push(0); z3d.push(count);
+  });
+
+  Plotly.newPlot('chart3dEscalation', [{
+    type:'bar3d',
+    x: x3d, y: y3d, z: z3d,
+    width:8, depth:0.4,
+    color: x3d.map(s=>s>=55?'#ef4444':s>=18?'#f59e0b':'#22c55e'),
+    opacity:0.85,
+  }].length > 0 ? [{
+    // Fallback: use a styled bar chart since bar3d needs webgl
+    type:'bar',
+    x: x3d.map(v=>v+'–'+(v+9)),
+    y: z3d,
+    marker:{
+      color: x3d.map(s=>s>=55?'#ef4444':s>=18?'#f59e0b':'#22c55e'),
+      line:{color:'#0d1117',width:1},
+      opacity:0.85,
+    },
+    name:'Conversations',
+    hovertemplate:'Score: %{x}<br>Count: %{y}<extra></extra>',
+  }] : [], applyDark({
+    xaxis:{title:{text:'Escalation Score Range',font:{size:10,color:'#8b949e'}},gridcolor:'#30363d'},
+    yaxis:{title:{text:'Count',font:{size:10,color:'#8b949e'}},gridcolor:'#30363d'},
+    bargap:0.1,
+    shapes:[
+      {type:'line',x0:'55–64',x1:'55–64',y0:0,y1:1,yref:'paper',line:{color:'rgba(239,68,68,0.5)',dash:'dash',width:1}},
+    ],
+  }), config);
+})();
+
+// ── ABSA Chart ────────────────────────────────────────────────────────────────
+(function(){
+  const aspectCounts={}, aspectNeg={};
+  explorerData.forEach(r=>{
+    try{
+      const aspects = typeof r.aspects==='string' ? JSON.parse(r.aspects||'[]') : (r.aspects||[]);
+      aspects.forEach(a=>{
+        aspectCounts[a.aspect]=(aspectCounts[a.aspect]||0)+1;
+        if(a.sentiment==='negative') aspectNeg[a.aspect]=(aspectNeg[a.aspect]||0)+1;
+      });
+    }catch(e){}
+  });
+  const labels=Object.keys(aspectCounts);
+  if(!labels.length){ document.getElementById('chartABSA').innerHTML='<div style="color:var(--muted);padding:40px;text-align:center;font-size:13px">No aspect data yet — upload a larger dataset</div>'; return; }
+  const negPcts=labels.map(l=>(aspectNeg[l]||0)/aspectCounts[l]*100);
+  const posPcts=labels.map(l=>100-((aspectNeg[l]||0)/aspectCounts[l]*100));
+
+  Plotly.newPlot('chartABSA',[
+    {type:'bar',orientation:'h',name:'Negative',x:negPcts,y:labels,marker:{color:'#ef4444',opacity:0.85}},
+    {type:'bar',orientation:'h',name:'Positive',x:posPcts,y:labels,marker:{color:'#22c55e',opacity:0.75}},
+  ], applyDark({
+    barmode:'stack',
+    xaxis:{title:{text:'% Sentiment',font:{size:10,color:'#8b949e'}},range:[0,100],gridcolor:'#30363d'},
+    yaxis:{gridcolor:'#30363d'},
+    hovermode:'y',
+  }), config);
+})();
+
+// ── Topics Chart ──────────────────────────────────────────────────────────────
+(function(){
+  const topicCounts={};
+  explorerData.forEach(r=>{ topicCounts[r.topic]=(topicCounts[r.topic]||0)+1; });
+  const sorted=Object.entries(topicCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  Plotly.newPlot('chartTopics',[{
+    type:'bar', orientation:'h',
+    x:sorted.map(s=>s[1]), y:sorted.map(s=>s[0]),
+    marker:{color:sorted.map((_,i)=>`hsl(${220+i*18},60%,${55+i*3}%)`),opacity:0.9},
+    hovertemplate:'<b>%{y}</b><br>%{x} conversations<extra></extra>',
+  }], applyDark({
+    xaxis:{gridcolor:'#30363d'},yaxis:{gridcolor:'#30363d'},
+    margin:{l:140,r:20,t:10,b:30},showlegend:false,
+  }), config);
+
+  // Sunburst priority
+  const priMap={'Churn Risk':'Critical','Billing Problem':'High','Refund Delay':'High','Service Quality':'Medium','Technical Issue':'Medium','Claim Status':'Medium','Login / Access':'Medium','General Praise':'Low','Product Feedback':'Low','Account Update':'Low'};
+  const byPri={Critical:[],High:[],Medium:[],Low:[]};
+  Object.entries(topicCounts).forEach(([t,c])=>{ const p=priMap[t]||'Low'; byPri[p].push({t,c}); });
+  const sbLabels=['All'], sbParents=[''], sbValues=[Object.values(topicCounts).reduce((a,b)=>a+b,0)];
+  const priColors={Critical:'#ef4444',High:'#f59e0b',Medium:'#3b82f6',Low:'#22c55e'};
+  Object.entries(byPri).forEach(([p,items])=>{
+    if(!items.length) return;
+    sbLabels.push(p); sbParents.push('All'); sbValues.push(items.reduce((a,i)=>a+i.c,0));
+    items.forEach(i=>{ sbLabels.push(i.t); sbParents.push(p); sbValues.push(i.c); });
+  });
+  Plotly.newPlot('chartPriority',[{
+    type:'sunburst', labels:sbLabels, parents:sbParents, values:sbValues,
+    branchvalues:'total',
+    marker:{colors:sbLabels.map(l=>priColors[l]||'#6366f1'), opacity:0.88},
+    textfont:{color:'#e6edf3',size:11},
+    hovertemplate:'<b>%{label}</b><br>%{value} conversations<extra></extra>',
+  }], applyDark({margin:{t:10,b:10,l:10,r:10},showlegend:false}), config);
+})();
+
+// ── Heatmap: Channel × Sentiment ─────────────────────────────────────────────
+(function(){
+  if(!explorerData[0]?.channel){ document.getElementById('chartHeatmap').innerHTML='<div style="color:var(--muted);padding:40px;text-align:center;font-size:13px">Add a channel column for heatmap</div>'; return; }
+  const channels=[...new Set(explorerData.map(r=>r.channel))].filter(Boolean);
+  const sentiments=['positive','neutral','negative'];
+  const z=sentiments.map(s=>channels.map(c=>explorerData.filter(r=>r.channel===c&&r.sentiment===s).length));
+  Plotly.newPlot('chartHeatmap',[{
+    type:'heatmap', z, x:channels, y:sentiments,
+    colorscale:[[0,'#161b22'],[0.5,'#6366f1'],[1,'#ef4444']],
+    hovertemplate:'Channel: %{x}<br>Sentiment: %{y}<br>Count: %{z}<extra></extra>',
+    showscale:true,
+  }], applyDark({margin:{t:10,b:40,l:80,r:20}}), config);
+})();
+
+// ── Escalation Levels Chart ───────────────────────────────────────────────────
+(function(){
+  const levels=['HIGH','MEDIUM','LOW'];
+  const counts=levels.map(l=>explorerData.filter(r=>r.escalation_level===l).length);
+  const colors=['#ef4444','#f59e0b','#22c55e'];
+  Plotly.newPlot('chartEscLevels',[{
+    type:'bar', x:levels, y:counts, marker:{color:colors,opacity:0.9,line:{color:'#0d1117',width:1}},
+    text:counts, textposition:'outside', textfont:{color:'#e6edf3',size:13},
+    hovertemplate:'<b>%{x}</b><br>%{y} conversations<extra></extra>',
+  }], applyDark({xaxis:{gridcolor:'#30363d'},yaxis:{gridcolor:'#30363d'},showlegend:false}), config);
+})();
+
+// ── Escalation Bubble Chart by Topic ─────────────────────────────────────────
+(function(){
+  const topicEsc={};
+  explorerData.forEach(r=>{
+    if(!topicEsc[r.topic]) topicEsc[r.topic]={total:0,highCount:0,scores:[]};
+    topicEsc[r.topic].total++;
+    if(r.escalation_level==='HIGH') topicEsc[r.topic].highCount++;
+    topicEsc[r.topic].scores.push(r.escalation_score||0);
+  });
+  const labels=Object.keys(topicEsc);
+  const x=labels.map(t=>topicEsc[t].highCount);
+  const y=labels.map(t=>topicEsc[t].scores.reduce((a,b)=>a+b,0)/topicEsc[t].scores.length);
+  const size=labels.map(t=>topicEsc[t].total);
+  Plotly.newPlot('chartEscBubble',[{
+    type:'scatter', mode:'markers+text', x, y,
+    text:labels.map(l=>l.split(' ')[0]), textposition:'top center',
+    textfont:{color:'#8b949e',size:9},
+    marker:{size:size.map(s=>Math.sqrt(s)*8), color:y, colorscale:'RdYlGn_r',
+      opacity:0.8, line:{color:'#0d1117',width:1}, showscale:true,
+      colorbar:{title:'Avg Esc Score',titlefont:{size:10,color:'#8b949e'},tickfont:{color:'#8b949e'}}},
+    hovertemplate:'<b>%{text}</b><br>HIGH risk: %{x}<br>Avg score: %{y:.1f}<extra></extra>',
+  }], applyDark({
+    xaxis:{title:{text:'# HIGH Risk Convs',font:{size:10,color:'#8b949e'}},gridcolor:'#30363d'},
+    yaxis:{title:{text:'Avg Escalation Score',font:{size:10,color:'#8b949e'}},gridcolor:'#30363d'},
+    showlegend:false,
+  }), config);
+})();
+
+// ── Tab + Explorer filter ─────────────────────────────────────────────────────
+function showTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  el.classList.add('active');
+}
+function filterTable(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const sent=document.getElementById('sentFilter').value;
+  const esc=document.getElementById('escFilter').value;
+  document.querySelectorAll('#explorerBody tr').forEach(row=>{
+    const show=row.innerText.toLowerCase().includes(q)
+      &&(!sent||row.dataset.sent===sent)&&(!esc||row.dataset.esc===esc);
+    row.style.display=show?'':'none';
+  });
+}
+</script>
+{% endblock %}

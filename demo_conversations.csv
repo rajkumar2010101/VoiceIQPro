@@ -1,0 +1,301 @@
+conversation_id,date,agent,shift,channel,customer_message,csat_score,resolved,wait_time_mins,handle_time_mins
+CONV_1000,2024-01-15,Agent_Priya,Night,Chat,Password reset email never arrived. Been trying for hours.,1,False,49,6
+CONV_1001,2024-03-10,Agent_Priya,Night,Chat,Reasonable service. Nothing outstanding but got the job done.,2,False,15,10
+CONV_1002,2024-03-18,Agent_Priya,Night,Phone,Can you help me update my address? No rush at all.,3,False,39,11
+CONV_1003,2024-01-21,Agent_Dev,Afternoon,Chat,I've been waiting 3 weeks for my refund! Nobody answers calls.,1,False,50,13
+CONV_1004,2024-01-12,Agent_Dev,Morning,Chat,Billing amount is wrong again. This is the third time this month!,2,True,53,4
+CONV_1005,2024-02-28,Agent_Meena,Morning,Chat,Your team helped me file a complex claim with ease. Really grateful.,4,True,37,12
+CONV_1006,2024-03-20,Agent_Sara,Night,Phone,Password reset email never arrived. Been trying for hours.,1,False,16,27
+CONV_1007,2024-01-11,Agent_Rahul,Morning,Chat,Called 5 times about the same issue. I am done waiting.,2,True,55,14
+CONV_1008,2024-02-17,Agent_Sara,Morning,Email,Your agent was incredibly empathetic and helpful. Excellent service.,5,True,46,24
+CONV_1009,2024-01-10,Agent_Meena,Night,Phone,Password reset email never arrived. Been trying for hours.,1,False,26,11
+CONV_1010,2024-03-29,Agent_Meena,Morning,Email,Password reset email never arrived. Been trying for hours.,2,True,51,4
+CONV_1011,2024-01-05,Agent_Sara,Afternoon,Chat,Confused about the charges on my last invoice. Can someone explain?,2,False,38,25
+CONV_1012,2024-01-28,Agent_Dev,Afternoon,Email,New app update is great. So much easier to navigate now.,5,True,11,11
+CONV_1013,2024-02-01,Agent_Meena,Night,Chat,Just checking when my claim will be processed. No urgency.,3,True,27,14
+CONV_1014,2024-01-18,Agent_Meena,Afternoon,Phone,Confused about the charges on my last invoice. Can someone explain?,2,True,11,23
+CONV_1015,2024-03-28,Agent_Dev,Night,Phone,Your agent was incredibly empathetic and helpful. Excellent service.,5,True,26,22
+CONV_1016,2024-03-08,Agent_Sara,Night,Phone,Submitted claim 3 days ago and already got it resolved. Super fast!,4,True,45,20
+CONV_1017,2024-02-04,Agent_Sara,Morning,Chat,Waiting time on calls is too long. Waited 45 minutes today.,2,False,2,26
+CONV_1018,2024-02-03,Agent_Meena,Morning,Email,Your team helped me file a complex claim with ease. Really grateful.,4,True,57,23
+CONV_1019,2024-03-22,Agent_Meena,Night,Phone,Called 5 times about the same issue. I am done waiting.,1,False,12,20
+CONV_1020,2024-03-08,Agent_Priya,Night,Chat,Waiting time on calls is too long. Waited 45 minutes today.,2,False,25,29
+CONV_1021,2024-01-31,Agent_Priya,Morning,Email,Called 5 times about the same issue. I am done waiting.,1,False,33,29
+CONV_1022,2024-03-09,Agent_Rahul,Morning,Email,My account got locked and I can't login. Need this fixed urgently.,2,True,12,11
+CONV_1023,2024-03-18,Agent_Dev,Morning,Email,Can you help me update my address? No rush at all.,2,True,27,24
+CONV_1024,2024-02-17,Agent_Dev,Night,Chat,Password reset email never arrived. Been trying for hours.,1,False,6,13
+CONV_1025,2024-03-16,Agent_Meena,Morning,Email,I've been waiting 3 weeks for my refund! Nobody answers calls.,1,False,47,23
+CONV_1026,2024-01-30,Agent_Priya,Morning,Chat,Thank you so much! Issue resolved in minutes. Really impressed.,4,True,34,10
+CONV_1027,2024-03-26,Agent_Dev,Morning,Email,Everything is working perfectly! I love using your platform.,4,True,48,21
+CONV_1028,2024-03-01,Agent_Rahul,Afternoon,Chat,I need to speak to a supervisor right now. This has gone too far.,1,False,44,16
+CONV_1029,2024-02-24,Agent_Dev,Afternoon,Email,My claim has been pending 2 months. I need answers or I will escalate.,1,True,43,6
+CONV_1030,2024-02-21,Agent_Sara,Morning,Phone,Thank you so much! Issue resolved in minutes. Really impressed.,4,True,14,20
+CONV_1031,2024-01-18,Agent_Dev,Morning,Chat,Submitted claim 3 days ago and already got it resolved. Super fast!,5,True,17,30
+CONV_1032,2024-02-26,Agent_Meena,Morning,Phone,My account got locked and I can't login. Need this fixed urgently.,1,True,50,30
+CONV_1033,2024-01-22,Agent_Dev,Afternoon,Chat,Confused about the charges on my last invoice. Can someone explain?,2,True,59,4
+CONV_1034,2024-02-18,Agent_Priya,Afternoon,Chat,Your agent was incredibly empathetic and helpful. Excellent service.,5,True,20,16
+CONV_1035,2024-03-12,Agent_Dev,Morning,Phone,I'm extremely disappointed. This is my last time using your services.,2,False,5,21
+CONV_1036,2024-03-10,Agent_Priya,Night,Chat,Your team helped me file a complex claim with ease. Really grateful.,4,True,5,21
+CONV_1037,2024-03-05,Agent_Meena,Morning,Phone,Charged twice. Please refund the duplicate charge immediately.,1,True,6,22
+CONV_1038,2024-03-27,Agent_Rahul,Afternoon,Phone,My account got locked and I can't login. Need this fixed urgently.,1,True,4,22
+CONV_1039,2024-02-23,Agent_Meena,Night,Email,My account got locked and I can't login. Need this fixed urgently.,2,True,15,24
+CONV_1040,2024-02-10,Agent_Rahul,Afternoon,Chat,I'm extremely disappointed. This is my last time using your services.,1,True,21,17
+CONV_1041,2024-01-10,Agent_Priya,Afternoon,Email,New app update is great. So much easier to navigate now.,4,True,6,20
+CONV_1042,2024-03-05,Agent_Sara,Morning,Chat,The portal keeps loading but nothing happens. Very frustrating.,1,True,25,12
+CONV_1043,2024-02-26,Agent_Meena,Night,Chat,Your agent was incredibly empathetic and helpful. Excellent service.,4,True,44,29
+CONV_1044,2024-02-08,Agent_Priya,Morning,Chat,Refund process is confusing. Don't know what documents to submit.,2,True,49,20
+CONV_1045,2024-02-04,Agent_Sara,Night,Phone,Just checking when my claim will be processed. No urgency.,3,False,42,30
+CONV_1046,2024-03-05,Agent_Dev,Afternoon,Phone,Everything is working perfectly! I love using your platform.,4,True,42,16
+CONV_1047,2024-01-06,Agent_Priya,Afternoon,Phone,Everything is working perfectly! I love using your platform.,5,True,12,26
+CONV_1048,2024-03-11,Agent_Dev,Night,Phone,Submitted claim 3 days ago and already got it resolved. Super fast!,4,True,6,25
+CONV_1049,2024-03-10,Agent_Priya,Afternoon,Email,Just checking when my claim will be processed. No urgency.,2,True,4,12
+CONV_1050,2024-01-06,Agent_Sara,Morning,Email,My claim has been pending 2 months. I need answers or I will escalate.,1,True,24,27
+CONV_1051,2024-02-22,Agent_Meena,Night,Phone,Refund process is confusing. Don't know what documents to submit.,2,True,53,28
+CONV_1052,2024-02-22,Agent_Priya,Morning,Email,Your agent was incredibly empathetic and helpful. Excellent service.,5,True,52,16
+CONV_1053,2024-02-01,Agent_Sara,Morning,Email,Reasonable service. Nothing outstanding but got the job done.,2,False,4,30
+CONV_1054,2024-01-29,Agent_Rahul,Afternoon,Chat,Charged twice. Please refund the duplicate charge immediately.,2,True,57,10
+CONV_1055,2024-01-04,Agent_Rahul,Afternoon,Chat,Confused about the charges on my last invoice. Can someone explain?,3,True,51,11
+CONV_1056,2024-03-23,Agent_Meena,Afternoon,Email,My claim has been pending 2 months. I need answers or I will escalate.,2,True,9,11
+CONV_1057,2024-03-15,Agent_Sara,Morning,Phone,Your agent was incredibly empathetic and helpful. Excellent service.,5,True,24,26
+CONV_1058,2024-02-25,Agent_Meena,Night,Phone,New app update is great. So much easier to navigate now.,5,True,59,21
+CONV_1059,2024-02-02,Agent_Priya,Night,Chat,The portal keeps loading but nothing happens. Very frustrating.,1,True,53,20
+CONV_1060,2024-03-26,Agent_Rahul,Afternoon,Chat,Reasonable service. Nothing outstanding but got the job done.,2,True,60,13
+CONV_1061,2024-02-10,Agent_Priya,Night,Chat,Refund was processed quickly. Very satisfied with how it was handled.,5,True,44,16
+CONV_1062,2024-02-21,Agent_Sara,Night,Phone,New app update is great. So much easier to navigate now.,4,True,28,24
+CONV_1063,2024-03-27,Agent_Rahul,Night,Email,I want to cancel my subscription. Service quality has gone down.,2,True,55,3
+CONV_1064,2024-02-06,Agent_Rahul,Afternoon,Email,Called 5 times about the same issue. I am done waiting.,2,True,30,24
+CONV_1065,2024-03-06,Agent_Dev,Night,Phone,The portal keeps loading but nothing happens. Very frustrating.,1,False,44,23
+CONV_1066,2024-02-12,Agent_Priya,Morning,Email,Refund was processed quickly. Very satisfied with how it was handled.,5,True,16,28
+CONV_1067,2024-01-19,Agent_Priya,Morning,Phone,The portal keeps loading but nothing happens. Very frustrating.,2,True,51,5
+CONV_1068,2024-02-23,Agent_Meena,Morning,Email,Submitted claim 3 days ago and already got it resolved. Super fast!,5,True,33,15
+CONV_1069,2024-01-19,Agent_Priya,Morning,Chat,Confused about the charges on my last invoice. Can someone explain?,2,False,46,19
+CONV_1070,2024-01-07,Agent_Meena,Morning,Phone,Submitted claim 3 days ago and already got it resolved. Super fast!,5,True,10,28
+CONV_1071,2024-03-26,Agent_Meena,Night,Email,Submitted claim 3 days ago and already got it resolved. Super fast!,5,True,50,17
+CONV_1072,2024-03-05,Agent_Dev,Night,Chat,Refund was processed quickly. Very satisfied with how it was handled.,4,True,49,30
+CONV_1073,2024-02-27,Agent_Sara,Morning,Email,Charged twice. Please refund the duplicate charge immediately.,2,True,35,18
+CONV_1074,2024-01-31,Agent_Sara,Afternoon,Phone,Password reset email never arrived. Been trying for hours.,2,False,23,13
+CONV_1075,2024-01-11,Agent_Rahul,Morning,Phone,Refund process is confusing. Don't know what documents to submit.,3,True,47,9
+CONV_1076,2024-02-23,Agent_Dev,Afternoon,Email,My account got locked and I can't login. Need this fixed urgently.,2,True,15,29
+CONV_1077,2024-02-19,Agent_Meena,Night,Phone,Your chatbot is useless. I need a real person right now.,2,True,24,12
+CONV_1078,2024-02-19,Agent_Dev,Night,Email,Waiting time on calls is too long. Waited 45 minutes today.,1,True,19,16
+CONV_1079,2024-01-04,Agent_Dev,Afternoon,Email,Charged twice. Please refund the duplicate charge immediately.,2,True,55,17
+CONV_1080,2024-03-20,Agent_Meena,Morning,Chat,Just checking when my claim will be processed. No urgency.,2,False,29,7
+CONV_1081,2024-01-24,Agent_Priya,Afternoon,Chat,Submitted claim 3 days ago and already got it resolved. Super fast!,5,True,15,17
+CONV_1082,2024-02-13,Agent_Dev,Afternoon,Chat,New app update is great. So much easier to navigate now.,5,True,55,5
+CONV_1083,2024-01-03,Agent_Meena,Morning,Chat,Charged twice. Please refund the duplicate charge immediately.,1,True,51,23
+CONV_1084,2024-01-04,Agent_Rahul,Morning,Phone,Thank you so much! Issue resolved in minutes. Really impressed.,4,True,17,7
+CONV_1085,2024-03-26,Agent_Priya,Night,Phone,Charged twice. Please refund the duplicate charge immediately.,2,True,51,14
+CONV_1086,2024-03-18,Agent_Meena,Night,Email,Your agent was incredibly empathetic and helpful. Excellent service.,4,True,51,29
+CONV_1087,2024-02-09,Agent_Priya,Night,Phone,Your agent was incredibly empathetic and helpful. Excellent service.,5,True,38,24
+CONV_1088,2024-02-20,Agent_Rahul,Morning,Email,I want to cancel my subscription. Service quality has gone down.,1,False,51,12
+CONV_1089,2024-03-17,Agent_Priya,Night,Phone,Reasonable service. Nothing outstanding but got the job done.,3,True,44,14
+CONV_1090,2024-03-05,Agent_Sara,Morning,Chat,My account got locked and I can't login. Need this fixed urgently.,2,False,25,23
+CONV_1091,2024-01-20,Agent_Dev,Morning,Email,Submitted claim 3 days ago and already got it resolved. Super fast!,5,True,41,28
+CONV_1092,2024-03-02,Agent_Dev,Afternoon,Email,Refund process is confusing. Don't know what documents to submit.,3,False,17,29
+CONV_1093,2024-02-05,Agent_Dev,Morning,Chat,My account got locked and I can't login. Need this fixed urgently.,2,False,33,30
+CONV_1094,2024-01-24,Agent_Dev,Morning,Chat,New app update is great. So much easier to navigate now.,5,True,23,11
+CONV_1095,2024-03-30,Agent_Sara,Night,Phone,Refund was processed quickly. Very satisfied with how it was handled.,4,True,7,10
+CONV_1096,2024-02-22,Agent_Dev,Night,Phone,Your team helped me file a complex claim with ease. Really grateful.,5,True,43,25
+CONV_1097,2024-02-27,Agent_Priya,Morning,Chat,Charged twice. Please refund the duplicate charge immediately.,1,True,17,12
+CONV_1098,2024-03-15,Agent_Sara,Afternoon,Email,Reasonable service. Nothing outstanding but got the job done.,3,True,49,20
+CONV_1099,2024-02-15,Agent_Dev,Afternoon,Chat,New app update is great. So much easier to navigate now.,5,True,16,6
+CONV_1100,2024-01-25,Agent_Sara,Morning,Email,Your team helped me file a complex claim with ease. Really grateful.,4,True,14,9
+CONV_1101,2024-03-02,Agent_Sara,Night,Email,Your team helped me file a complex claim with ease. Really grateful.,5,True,8,29
+CONV_1102,2024-02-07,Agent_Rahul,Afternoon,Phone,The portal keeps loading but nothing happens. Very frustrating.,2,False,36,7
+CONV_1103,2024-01-06,Agent_Priya,Night,Chat,Everything is working perfectly! I love using your platform.,4,True,42,30
+CONV_1104,2024-03-03,Agent_Priya,Morning,Email,Waiting time on calls is too long. Waited 45 minutes today.,2,True,30,13
+CONV_1105,2024-01-07,Agent_Sara,Afternoon,Phone,Your agent was incredibly empathetic and helpful. Excellent service.,4,True,27,18
+CONV_1106,2024-03-14,Agent_Priya,Morning,Phone,My account got locked and I can't login. Need this fixed urgently.,2,False,17,6
+CONV_1107,2024-02-23,Agent_Meena,Night,Email,Refund process is confusing. Don't know what documents to submit.,2,True,26,17
+CONV_1108,2024-02-08,Agent_Meena,Afternoon,Chat,Submitted claim 3 days ago and already got it resolved. Super fast!,4,True,41,26
+CONV_1109,2024-01-27,Agent_Rahul,Afternoon,Email,Billing amount is wrong again. This is the third time this month!,1,False,13,20
+CONV_1110,2024-01-21,Agent_Priya,Afternoon,Chat,My account got locked and I can't login. Need this fixed urgently.,2,False,16,12
+CONV_1111,2024-02-06,Agent_Dev,Morning,Email,I'm extremely disappointed. This is my last time using your services.,1,True,52,28
+CONV_1112,2024-03-16,Agent_Rahul,Afternoon,Phone,Password reset email never arrived. Been trying for hours.,1,True,60,11
+CONV_1113,2024-01-10,Agent_Priya,Morning,Chat,Just checking when my claim will be processed. No urgency.,3,True,31,25
+CONV_1114,2024-03-30,Agent_Dev,Afternoon,Email,Called 5 times about the same issue. I am done waiting.,2,True,40,4
+CONV_1115,2024-02-11,Agent_Meena,Afternoon,Phone,Your chatbot is useless. I need a real person right now.,1,False,45,29
+CONV_1116,2024-03-16,Agent_Priya,Night,Chat,I need to speak to a supervisor right now. This has gone too far.,1,True,13,18
+CONV_1117,2024-03-24,Agent_Dev,Afternoon,Phone,Can you help me update my address? No rush at all.,3,True,33,5
+CONV_1118,2024-02-14,Agent_Dev,Afternoon,Chat,Charged twice. Please refund the duplicate charge immediately.,1,True,23,16
+CONV_1119,2024-03-04,Agent_Sara,Night,Chat,I'm extremely disappointed. This is my last time using your services.,1,True,22,11
+CONV_1120,2024-01-15,Agent_Dev,Night,Phone,New app update is great. So much easier to navigate now.,5,True,28,4
+CONV_1121,2024-03-07,Agent_Sara,Night,Chat,The portal keeps loading but nothing happens. Very frustrating.,2,True,15,11
+CONV_1122,2024-01-17,Agent_Sara,Afternoon,Email,Refund process is confusing. Don't know what documents to submit.,3,False,42,22
+CONV_1123,2024-01-21,Agent_Sara,Night,Phone,Confused about the charges on my last invoice. Can someone explain?,3,False,55,6
+CONV_1124,2024-01-16,Agent_Rahul,Afternoon,Email,Submitted claim 3 days ago and already got it resolved. Super fast!,5,True,34,25
+CONV_1125,2024-02-23,Agent_Dev,Afternoon,Phone,Everything is working perfectly! I love using your platform.,5,True,37,7
+CONV_1126,2024-01-25,Agent_Meena,Night,Email,I want to cancel my subscription. Service quality has gone down.,1,True,19,27
+CONV_1127,2024-02-13,Agent_Meena,Afternoon,Phone,Your chatbot is useless. I need a real person right now.,2,True,55,21
+CONV_1128,2024-03-25,Agent_Dev,Morning,Chat,I need to speak to a supervisor right now. This has gone too far.,2,False,37,27
+CONV_1129,2024-02-18,Agent_Dev,Afternoon,Phone,Refund process is confusing. Don't know what documents to submit.,2,True,16,30
+CONV_1130,2024-02-22,Agent_Priya,Afternoon,Email,Waiting time on calls is too long. Waited 45 minutes today.,2,True,53,15
+CONV_1131,2024-03-25,Agent_Rahul,Afternoon,Phone,I want to cancel my subscription. Service quality has gone down.,1,True,39,13
+CONV_1132,2024-02-26,Agent_Priya,Night,Chat,Billing amount is wrong again. This is the third time this month!,1,True,28,30
+CONV_1133,2024-01-20,Agent_Priya,Afternoon,Chat,Password reset email never arrived. Been trying for hours.,2,True,27,23
+CONV_1134,2024-02-12,Agent_Meena,Afternoon,Chat,My account got locked and I can't login. Need this fixed urgently.,2,True,4,22
+CONV_1135,2024-01-31,Agent_Sara,Morning,Email,My account got locked and I can't login. Need this fixed urgently.,1,True,8,27
+CONV_1136,2024-01-13,Agent_Dev,Morning,Email,Password reset email never arrived. Been trying for hours.,2,True,4,13
+CONV_1137,2024-02-07,Agent_Sara,Afternoon,Chat,Thank you so much! Issue resolved in minutes. Really impressed.,4,True,17,19
+CONV_1138,2024-03-13,Agent_Rahul,Morning,Phone,Your chatbot is useless. I need a real person right now.,1,True,26,22
+CONV_1139,2024-01-31,Agent_Dev,Night,Phone,Reasonable service. Nothing outstanding but got the job done.,2,True,18,17
+CONV_1140,2024-03-26,Agent_Priya,Afternoon,Chat,Everything is working perfectly! I love using your platform.,4,True,6,17
+CONV_1141,2024-03-16,Agent_Sara,Night,Chat,My claim has been pending 2 months. I need answers or I will escalate.,2,True,21,9
+CONV_1142,2024-03-02,Agent_Priya,Morning,Chat,I want to cancel my subscription. Service quality has gone down.,2,True,46,12
+CONV_1143,2024-03-25,Agent_Dev,Afternoon,Phone,I've been waiting 3 weeks for my refund! Nobody answers calls.,1,True,49,18
+CONV_1144,2024-01-30,Agent_Meena,Afternoon,Phone,Called 5 times about the same issue. I am done waiting.,1,True,45,27
+CONV_1145,2024-03-25,Agent_Rahul,Night,Phone,Your team helped me file a complex claim with ease. Really grateful.,4,True,21,28
+CONV_1146,2024-01-05,Agent_Meena,Afternoon,Email,Submitted claim 3 days ago and already got it resolved. Super fast!,4,True,7,12
+CONV_1147,2024-02-23,Agent_Rahul,Morning,Phone,New app update is great. So much easier to navigate now.,5,True,35,19
+CONV_1148,2024-01-22,Agent_Sara,Afternoon,Chat,Everything is working perfectly! I love using your platform.,5,True,53,6
+CONV_1149,2024-01-10,Agent_Rahul,Morning,Email,Submitted claim 3 days ago and already got it resolved. Super fast!,5,True,56,28
+CONV_1150,2024-02-16,Agent_Priya,Afternoon,Phone,Refund process is confusing. Don't know what documents to submit.,3,True,31,14
+CONV_1151,2024-03-27,Agent_Sara,Night,Chat,Reasonable service. Nothing outstanding but got the job done.,3,False,16,18
+CONV_1152,2024-03-20,Agent_Meena,Afternoon,Email,I've been waiting 3 weeks for my refund! Nobody answers calls.,1,True,42,29
+CONV_1153,2024-03-30,Agent_Sara,Night,Chat,Submitted claim 3 days ago and already got it resolved. Super fast!,4,True,10,4
+CONV_1154,2024-02-08,Agent_Dev,Morning,Phone,Thank you so much! Issue resolved in minutes. Really impressed.,4,True,58,20
+CONV_1155,2024-02-19,Agent_Dev,Afternoon,Email,Just checking when my claim will be processed. No urgency.,3,True,48,7
+CONV_1156,2024-03-24,Agent_Priya,Afternoon,Email,Your chatbot is useless. I need a real person right now.,2,True,19,4
+CONV_1157,2024-02-17,Agent_Rahul,Afternoon,Chat,I'm extremely disappointed. This is my last time using your services.,1,True,8,24
+CONV_1158,2024-03-10,Agent_Sara,Morning,Chat,My claim has been pending 2 months. I need answers or I will escalate.,2,False,9,30
+CONV_1159,2024-01-12,Agent_Rahul,Night,Email,Submitted claim 3 days ago and already got it resolved. Super fast!,4,True,5,28
+CONV_1160,2024-02-01,Agent_Rahul,Night,Phone,New app update is great. So much easier to navigate now.,4,True,55,27
+CONV_1161,2024-01-27,Agent_Meena,Morning,Phone,Refund process is confusing. Don't know what documents to submit.,3,True,52,22
+CONV_1162,2024-02-05,Agent_Rahul,Morning,Email,I've been waiting 3 weeks for my refund! Nobody answers calls.,2,True,9,24
+CONV_1163,2024-01-17,Agent_Priya,Afternoon,Phone,I've been waiting 3 weeks for my refund! Nobody answers calls.,2,False,18,4
+CONV_1164,2024-02-23,Agent_Meena,Morning,Email,Just checking when my claim will be processed. No urgency.,2,True,51,14
+CONV_1165,2024-03-16,Agent_Priya,Afternoon,Email,Can you help me update my address? No rush at all.,2,True,4,26
+CONV_1166,2024-03-07,Agent_Sara,Afternoon,Email,Reasonable service. Nothing outstanding but got the job done.,2,False,32,30
+CONV_1167,2024-02-24,Agent_Priya,Afternoon,Email,I want to cancel my subscription. Service quality has gone down.,2,False,7,13
+CONV_1168,2024-01-19,Agent_Priya,Morning,Chat,Refund was processed quickly. Very satisfied with how it was handled.,5,True,26,22
+CONV_1169,2024-02-07,Agent_Dev,Night,Email,Can you help me update my address? No rush at all.,3,False,46,6
+CONV_1170,2024-03-24,Agent_Meena,Night,Phone,Password reset email never arrived. Been trying for hours.,2,True,16,16
+CONV_1171,2024-02-28,Agent_Dev,Afternoon,Email,New app update is great. So much easier to navigate now.,4,True,22,16
+CONV_1172,2024-03-26,Agent_Sara,Afternoon,Phone,New app update is great. So much easier to navigate now.,5,True,6,5
+CONV_1173,2024-01-12,Agent_Dev,Morning,Email,My account got locked and I can't login. Need this fixed urgently.,2,True,37,4
+CONV_1174,2024-03-12,Agent_Meena,Afternoon,Email,I need to speak to a supervisor right now. This has gone too far.,1,True,57,24
+CONV_1175,2024-02-24,Agent_Priya,Afternoon,Email,Waiting time on calls is too long. Waited 45 minutes today.,2,False,38,19
+CONV_1176,2024-01-20,Agent_Dev,Morning,Phone,The portal keeps loading but nothing happens. Very frustrating.,2,True,25,6
+CONV_1177,2024-02-05,Agent_Meena,Morning,Chat,Waiting time on calls is too long. Waited 45 minutes today.,1,True,44,29
+CONV_1178,2024-02-04,Agent_Priya,Morning,Chat,I'm extremely disappointed. This is my last time using your services.,2,True,24,3
+CONV_1179,2024-01-19,Agent_Meena,Night,Chat,Your agent was incredibly empathetic and helpful. Excellent service.,4,True,11,26
+CONV_1180,2024-01-04,Agent_Priya,Night,Email,Password reset email never arrived. Been trying for hours.,1,False,31,13
+CONV_1181,2024-02-17,Agent_Sara,Night,Chat,Your agent was incredibly empathetic and helpful. Excellent service.,4,True,58,4
+CONV_1182,2024-01-21,Agent_Meena,Morning,Email,Just checking when my claim will be processed. No urgency.,2,False,44,16
+CONV_1183,2024-03-18,Agent_Dev,Afternoon,Chat,Charged twice. Please refund the duplicate charge immediately.,1,True,9,14
+CONV_1184,2024-01-15,Agent_Sara,Night,Email,Your chatbot is useless. I need a real person right now.,2,True,21,4
+CONV_1185,2024-02-20,Agent_Meena,Morning,Phone,Confused about the charges on my last invoice. Can someone explain?,2,False,15,27
+CONV_1186,2024-02-02,Agent_Sara,Afternoon,Phone,Just checking when my claim will be processed. No urgency.,2,True,29,8
+CONV_1187,2024-02-18,Agent_Meena,Night,Phone,Just checking when my claim will be processed. No urgency.,3,False,57,26
+CONV_1188,2024-02-25,Agent_Priya,Afternoon,Phone,Thank you so much! Issue resolved in minutes. Really impressed.,5,True,38,16
+CONV_1189,2024-02-21,Agent_Dev,Afternoon,Phone,I need to speak to a supervisor right now. This has gone too far.,2,False,22,8
+CONV_1190,2024-02-28,Agent_Sara,Morning,Chat,Refund was processed quickly. Very satisfied with how it was handled.,4,True,17,16
+CONV_1191,2024-02-21,Agent_Meena,Morning,Chat,I need to speak to a supervisor right now. This has gone too far.,2,True,16,13
+CONV_1192,2024-01-22,Agent_Priya,Night,Email,Waiting time on calls is too long. Waited 45 minutes today.,1,True,14,27
+CONV_1193,2024-02-14,Agent_Rahul,Morning,Phone,My claim has been pending 2 months. I need answers or I will escalate.,1,False,13,22
+CONV_1194,2024-03-24,Agent_Priya,Morning,Email,Just checking when my claim will be processed. No urgency.,3,True,38,27
+CONV_1195,2024-02-27,Agent_Meena,Night,Email,I need to speak to a supervisor right now. This has gone too far.,2,True,42,13
+CONV_1196,2024-02-26,Agent_Priya,Afternoon,Chat,Just checking when my claim will be processed. No urgency.,3,True,39,4
+CONV_1197,2024-03-05,Agent_Priya,Afternoon,Chat,My claim has been pending 2 months. I need answers or I will escalate.,2,False,25,29
+CONV_1198,2024-01-10,Agent_Priya,Night,Email,Called 5 times about the same issue. I am done waiting.,2,True,37,28
+CONV_1199,2024-01-06,Agent_Dev,Night,Email,Your team helped me file a complex claim with ease. Really grateful.,4,True,22,22
+CONV_1200,2024-03-05,Agent_Rahul,Morning,Chat,Charged twice. Please refund the duplicate charge immediately.,1,True,55,13
+CONV_1201,2024-01-11,Agent_Meena,Night,Phone,I'm extremely disappointed. This is my last time using your services.,1,False,30,17
+CONV_1202,2024-03-07,Agent_Meena,Morning,Chat,Can you help me update my address? No rush at all.,3,True,26,16
+CONV_1203,2024-02-13,Agent_Meena,Morning,Email,Waiting time on calls is too long. Waited 45 minutes today.,2,False,8,20
+CONV_1204,2024-02-19,Agent_Sara,Afternoon,Email,Reasonable service. Nothing outstanding but got the job done.,2,False,39,24
+CONV_1205,2024-02-14,Agent_Sara,Night,Email,Just checking when my claim will be processed. No urgency.,3,False,47,5
+CONV_1206,2024-03-12,Agent_Dev,Night,Chat,Called 5 times about the same issue. I am done waiting.,1,True,55,26
+CONV_1207,2024-03-08,Agent_Priya,Night,Email,Reasonable service. Nothing outstanding but got the job done.,3,True,3,14
+CONV_1208,2024-01-24,Agent_Rahul,Afternoon,Chat,Called 5 times about the same issue. I am done waiting.,1,False,10,7
+CONV_1209,2024-02-07,Agent_Priya,Night,Email,My account got locked and I can't login. Need this fixed urgently.,1,True,58,27
+CONV_1210,2024-01-17,Agent_Meena,Afternoon,Phone,Refund was processed quickly. Very satisfied with how it was handled.,4,True,13,29
+CONV_1211,2024-03-20,Agent_Rahul,Night,Chat,I'm extremely disappointed. This is my last time using your services.,1,True,45,26
+CONV_1212,2024-02-26,Agent_Meena,Afternoon,Email,Confused about the charges on my last invoice. Can someone explain?,3,False,17,12
+CONV_1213,2024-01-25,Agent_Sara,Night,Email,Charged twice. Please refund the duplicate charge immediately.,2,True,20,27
+CONV_1214,2024-03-05,Agent_Meena,Afternoon,Phone,I want to cancel my subscription. Service quality has gone down.,1,True,10,30
+CONV_1215,2024-01-07,Agent_Dev,Afternoon,Email,Everything is working perfectly! I love using your platform.,4,True,47,30
+CONV_1216,2024-01-16,Agent_Sara,Morning,Phone,Can you help me update my address? No rush at all.,3,True,34,7
+CONV_1217,2024-01-12,Agent_Rahul,Afternoon,Chat,Your chatbot is useless. I need a real person right now.,1,True,27,19
+CONV_1218,2024-01-31,Agent_Dev,Morning,Chat,My claim has been pending 2 months. I need answers or I will escalate.,1,False,8,29
+CONV_1219,2024-03-24,Agent_Sara,Morning,Phone,I'm extremely disappointed. This is my last time using your services.,1,False,55,18
+CONV_1220,2024-01-18,Agent_Dev,Afternoon,Email,I'm extremely disappointed. This is my last time using your services.,1,True,3,11
+CONV_1221,2024-01-20,Agent_Meena,Night,Email,The portal keeps loading but nothing happens. Very frustrating.,2,False,20,10
+CONV_1222,2024-01-16,Agent_Priya,Morning,Chat,Called 5 times about the same issue. I am done waiting.,2,False,55,18
+CONV_1223,2024-03-09,Agent_Priya,Night,Email,Refund was processed quickly. Very satisfied with how it was handled.,4,True,47,7
+CONV_1224,2024-02-24,Agent_Priya,Night,Chat,Called 5 times about the same issue. I am done waiting.,1,True,13,24
+CONV_1225,2024-01-11,Agent_Meena,Afternoon,Phone,Reasonable service. Nothing outstanding but got the job done.,2,False,32,4
+CONV_1226,2024-02-19,Agent_Sara,Afternoon,Email,Password reset email never arrived. Been trying for hours.,1,False,6,14
+CONV_1227,2024-03-25,Agent_Priya,Night,Email,Confused about the charges on my last invoice. Can someone explain?,3,False,24,20
+CONV_1228,2024-03-23,Agent_Rahul,Night,Chat,New app update is great. So much easier to navigate now.,5,True,42,8
+CONV_1229,2024-01-09,Agent_Dev,Morning,Chat,Just checking when my claim will be processed. No urgency.,2,False,14,4
+CONV_1230,2024-02-09,Agent_Meena,Afternoon,Email,New app update is great. So much easier to navigate now.,5,True,18,4
+CONV_1231,2024-03-23,Agent_Rahul,Afternoon,Chat,Waiting time on calls is too long. Waited 45 minutes today.,1,True,23,11
+CONV_1232,2024-02-17,Agent_Dev,Afternoon,Email,Billing amount is wrong again. This is the third time this month!,2,True,26,13
+CONV_1233,2024-03-04,Agent_Dev,Afternoon,Email,Your agent was incredibly empathetic and helpful. Excellent service.,5,True,53,5
+CONV_1234,2024-02-24,Agent_Priya,Afternoon,Email,Your team helped me file a complex claim with ease. Really grateful.,4,True,36,12
+CONV_1235,2024-01-14,Agent_Priya,Afternoon,Email,New app update is great. So much easier to navigate now.,5,True,21,17
+CONV_1236,2024-02-24,Agent_Rahul,Night,Chat,Refund was processed quickly. Very satisfied with how it was handled.,5,True,30,4
+CONV_1237,2024-02-15,Agent_Meena,Afternoon,Chat,Your team helped me file a complex claim with ease. Really grateful.,4,True,6,24
+CONV_1238,2024-02-21,Agent_Sara,Night,Email,Password reset email never arrived. Been trying for hours.,1,True,11,30
+CONV_1239,2024-03-27,Agent_Dev,Morning,Phone,Refund was processed quickly. Very satisfied with how it was handled.,4,True,17,27
+CONV_1240,2024-02-16,Agent_Sara,Afternoon,Email,Password reset email never arrived. Been trying for hours.,1,True,45,17
+CONV_1241,2024-02-17,Agent_Dev,Morning,Email,My claim has been pending 2 months. I need answers or I will escalate.,1,True,27,13
+CONV_1242,2024-02-05,Agent_Rahul,Morning,Phone,Password reset email never arrived. Been trying for hours.,1,True,26,20
+CONV_1243,2024-02-03,Agent_Sara,Night,Chat,Billing amount is wrong again. This is the third time this month!,1,True,20,25
+CONV_1244,2024-01-26,Agent_Priya,Morning,Phone,Charged twice. Please refund the duplicate charge immediately.,2,False,47,17
+CONV_1245,2024-03-28,Agent_Sara,Night,Chat,My account got locked and I can't login. Need this fixed urgently.,1,True,20,12
+CONV_1246,2024-03-30,Agent_Rahul,Afternoon,Email,Your agent was incredibly empathetic and helpful. Excellent service.,4,True,9,9
+CONV_1247,2024-01-31,Agent_Dev,Morning,Chat,Just checking when my claim will be processed. No urgency.,3,True,37,7
+CONV_1248,2024-01-12,Agent_Priya,Afternoon,Chat,Refund was processed quickly. Very satisfied with how it was handled.,5,True,35,16
+CONV_1249,2024-02-22,Agent_Meena,Morning,Phone,Waiting time on calls is too long. Waited 45 minutes today.,2,True,30,17
+CONV_1250,2024-03-07,Agent_Sara,Morning,Email,Reasonable service. Nothing outstanding but got the job done.,2,True,10,16
+CONV_1251,2024-01-08,Agent_Priya,Night,Phone,Can you help me update my address? No rush at all.,3,False,22,25
+CONV_1252,2024-02-14,Agent_Meena,Afternoon,Phone,Confused about the charges on my last invoice. Can someone explain?,3,False,37,11
+CONV_1253,2024-03-21,Agent_Sara,Night,Email,Just checking when my claim will be processed. No urgency.,2,True,12,21
+CONV_1254,2024-01-20,Agent_Rahul,Night,Email,I need to speak to a supervisor right now. This has gone too far.,2,True,38,4
+CONV_1255,2024-01-11,Agent_Priya,Night,Email,I've been waiting 3 weeks for my refund! Nobody answers calls.,2,True,51,21
+CONV_1256,2024-03-20,Agent_Priya,Afternoon,Email,Your chatbot is useless. I need a real person right now.,2,True,21,18
+CONV_1257,2024-03-28,Agent_Dev,Afternoon,Chat,Confused about the charges on my last invoice. Can someone explain?,2,True,12,17
+CONV_1258,2024-03-02,Agent_Dev,Morning,Chat,Your chatbot is useless. I need a real person right now.,1,False,47,13
+CONV_1259,2024-02-14,Agent_Dev,Morning,Chat,Your team helped me file a complex claim with ease. Really grateful.,4,True,22,10
+CONV_1260,2024-01-16,Agent_Sara,Afternoon,Phone,Submitted claim 3 days ago and already got it resolved. Super fast!,4,True,8,4
+CONV_1261,2024-02-19,Agent_Meena,Afternoon,Phone,Called 5 times about the same issue. I am done waiting.,1,True,38,26
+CONV_1262,2024-01-25,Agent_Rahul,Afternoon,Email,New app update is great. So much easier to navigate now.,5,True,33,12
+CONV_1263,2024-01-03,Agent_Priya,Afternoon,Email,Charged twice. Please refund the duplicate charge immediately.,2,True,15,21
+CONV_1264,2024-01-07,Agent_Priya,Afternoon,Chat,My claim has been pending 2 months. I need answers or I will escalate.,2,False,2,30
+CONV_1265,2024-02-25,Agent_Rahul,Afternoon,Email,Billing amount is wrong again. This is the third time this month!,2,True,25,4
+CONV_1266,2024-01-07,Agent_Meena,Night,Phone,I want to cancel my subscription. Service quality has gone down.,2,True,6,15
+CONV_1267,2024-02-27,Agent_Meena,Afternoon,Email,Can you help me update my address? No rush at all.,2,False,8,15
+CONV_1268,2024-02-13,Agent_Meena,Afternoon,Phone,My claim has been pending 2 months. I need answers or I will escalate.,1,True,27,19
+CONV_1269,2024-01-06,Agent_Priya,Morning,Email,Thank you so much! Issue resolved in minutes. Really impressed.,5,True,53,18
+CONV_1270,2024-02-28,Agent_Rahul,Night,Email,Can you help me update my address? No rush at all.,2,False,41,13
+CONV_1271,2024-02-20,Agent_Meena,Night,Chat,Your agent was incredibly empathetic and helpful. Excellent service.,5,True,34,29
+CONV_1272,2024-03-09,Agent_Dev,Night,Email,Can you help me update my address? No rush at all.,3,True,3,14
+CONV_1273,2024-03-27,Agent_Priya,Afternoon,Email,New app update is great. So much easier to navigate now.,5,True,52,26
+CONV_1274,2024-03-21,Agent_Priya,Night,Chat,I'm extremely disappointed. This is my last time using your services.,2,True,52,27
+CONV_1275,2024-03-14,Agent_Rahul,Night,Phone,I need to speak to a supervisor right now. This has gone too far.,2,False,42,26
+CONV_1276,2024-02-18,Agent_Rahul,Night,Phone,Refund was processed quickly. Very satisfied with how it was handled.,4,True,38,25
+CONV_1277,2024-01-25,Agent_Priya,Afternoon,Chat,Billing amount is wrong again. This is the third time this month!,2,False,46,9
+CONV_1278,2024-03-05,Agent_Meena,Afternoon,Email,Your chatbot is useless. I need a real person right now.,1,True,35,9
+CONV_1279,2024-02-11,Agent_Dev,Night,Chat,Refund process is confusing. Don't know what documents to submit.,3,True,31,20
+CONV_1280,2024-03-10,Agent_Sara,Night,Email,New app update is great. So much easier to navigate now.,5,True,41,18
+CONV_1281,2024-02-01,Agent_Sara,Night,Chat,The portal keeps loading but nothing happens. Very frustrating.,1,True,21,27
+CONV_1282,2024-01-27,Agent_Dev,Afternoon,Chat,Called 5 times about the same issue. I am done waiting.,2,True,52,26
+CONV_1283,2024-02-06,Agent_Priya,Night,Email,Everything is working perfectly! I love using your platform.,5,True,59,15
+CONV_1284,2024-01-19,Agent_Sara,Morning,Chat,My claim has been pending 2 months. I need answers or I will escalate.,1,False,30,23
+CONV_1285,2024-03-02,Agent_Rahul,Morning,Email,Everything is working perfectly! I love using your platform.,5,True,37,25
+CONV_1286,2024-01-18,Agent_Priya,Night,Email,Everything is working perfectly! I love using your platform.,4,True,17,4
+CONV_1287,2024-03-08,Agent_Rahul,Night,Phone,Reasonable service. Nothing outstanding but got the job done.,2,False,23,25
+CONV_1288,2024-01-13,Agent_Rahul,Morning,Email,Charged twice. Please refund the duplicate charge immediately.,1,True,58,18
+CONV_1289,2024-03-24,Agent_Rahul,Afternoon,Chat,Charged twice. Please refund the duplicate charge immediately.,2,True,60,27
+CONV_1290,2024-03-24,Agent_Meena,Morning,Email,My account got locked and I can't login. Need this fixed urgently.,1,True,13,16
+CONV_1291,2024-01-05,Agent_Dev,Afternoon,Phone,Your agent was incredibly empathetic and helpful. Excellent service.,5,True,58,4
+CONV_1292,2024-02-08,Agent_Meena,Night,Phone,I've been waiting 3 weeks for my refund! Nobody answers calls.,2,False,43,20
+CONV_1293,2024-03-04,Agent_Rahul,Night,Chat,Can you help me update my address? No rush at all.,3,False,9,13
+CONV_1294,2024-02-28,Agent_Sara,Night,Phone,Your agent was incredibly empathetic and helpful. Excellent service.,4,True,49,13
+CONV_1295,2024-03-13,Agent_Rahul,Morning,Email,Called 5 times about the same issue. I am done waiting.,2,True,34,13
+CONV_1296,2024-02-21,Agent_Priya,Morning,Phone,My account got locked and I can't login. Need this fixed urgently.,2,False,17,3
+CONV_1297,2024-02-19,Agent_Rahul,Afternoon,Chat,Everything is working perfectly! I love using your platform.,5,True,21,21
+CONV_1298,2024-03-14,Agent_Priya,Afternoon,Email,Your team helped me file a complex claim with ease. Really grateful.,5,True,46,10
+CONV_1299,2024-03-26,Agent_Priya,Afternoon,Chat,Thank you so much! Issue resolved in minutes. Really impressed.,4,True,27,24

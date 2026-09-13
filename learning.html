@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% block title %}AI Learning Center — VoiceIQ Pro{% endblock %}
+{% block page_title %}AI Learning Center{% endblock %}
+{% block page_sub %}Teach the AI by correcting its predictions · Reinforcement Learning{% endblock %}
+
+{% block extra_style %}
+<style>
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center}
+.stat-card .sv{font-size:28px;font-weight:800;color:#fff}
+.stat-card .sl{font-size:11px;color:var(--muted);margin-top:4px}
+.accuracy-bar{width:100%;height:10px;background:var(--bg3);border-radius:5px;margin-top:10px;overflow:hidden}
+.accuracy-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent),var(--green));transition:width 1s}
+.how-works{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:20px}
+.how-works h3{font-size:14px;font-weight:600;color:#fff;margin-bottom:14px}
+.step{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.step-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-body .st{font-size:13px;font-weight:500;color:var(--text)}
+.step-body .sd{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.6}
+.rec-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.rec-card .msg{font-size:13px;color:var(--text);line-height:1.6;margin-bottom:12px;padding:10px;background:var(--bg3);border-radius:7px;font-style:italic}
+.rec-card .ai-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.rec-card .label-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.rec-card label{font-size:11px;color:var(--muted);font-weight:500}
+.fix-select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--text);font-size:12px}
+.fix-select:focus{outline:none;border-color:var(--accent)}
+.retrain-box{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:var(--r);padding:20px;text-align:center;margin-bottom:20px}
+.progress-ring{font-size:48px;margin-bottom:8px}
+.tag-pending{background:rgba(245,158,11,.15);color:#fde68a;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid rgba(245,158,11,.25)}
+.tag-applied{background:rgba(34,197,94,.15);color:#86efac;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid rgba(34,197,94,.25)}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HOW IT WORKS EXPLAINER -->
+<div class="how-works">
+  <h3>🧠 How AI Learning Works in VoiceIQ Pro</h3>
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="st">AI Analyzes Your Data</div>
+      <div class="sd">When you upload a CSV or receive data via API, VoiceIQ's NLP engine automatically predicts sentiment, emotion, topic, and escalation risk for every conversation.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <div class="st">You Review & Correct Mistakes</div>
+      <div class="sd">Below, you see recent conversations with the AI's predictions. If the AI got something wrong (e.g., said "positive" but it was actually "frustrated"), you correct it using the dropdowns and click Submit Correction.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="st">Corrections Are Saved to Database</div>
+      <div class="sd">Your corrections are stored in the SQLite database (voiceiq.db). Each correction is a "lesson" for the AI — what it predicted vs. what was correct.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <div class="st">Owner Triggers Retraining</div>
+      <div class="sd">Once enough corrections are collected (5+), the Owner can click "Apply Learning" to update the model. Accuracy improves with every batch of corrections.</div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="sv">{{ stats.total_records }}</div>
+    <div class="sl">Conversations in DB</div>
+  </div>
+  <div class="stat-card">
+    <div class="sv" style="color:var(--accent)">{{ stats.feedback_count }}</div>
+    <div class="sl">Corrections submitted</div>
+  </div>
+  <div class="stat-card">
+    <div class="sv" style="color:var(--amber)">{{ stats.pending_count }}</div>
+    <div class="sl">Pending (not applied yet)</div>
+  </div>
+  <div class="stat-card">
+    <div class="sv" style="color:var(--green)">{{ stats.accuracy_estimate }}%</div>
+    <div class="sl">Estimated accuracy</div>
+    <div class="accuracy-bar"><div class="accuracy-fill" style="width:{{ stats.accuracy_estimate }}%"></div></div>
+  </div>
+</div>
+
+<!-- RETRAIN (owner only) -->
+{% if user.role == 'owner' %}
+<div class="retrain-box">
+  <div class="progress-ring">🔄</div>
+  <div style="font-size:15px;font-weight:600;color:#fff;margin-bottom:6px">Apply Corrections to Model</div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:16px">
+    You have <strong style="color:var(--amber)">{{ stats.pending_count }}</strong> pending corrections.
+    Minimum 5 required to retrain.
+  </div>
+  <button class="btn btn-primary" onclick="retrain()" {% if stats.pending_count < 5 %}style="opacity:.5;cursor:not-allowed"{% endif %}>
+    ⚡ Apply Learning ({{ stats.pending_count }} corrections)
+  </button>
+  <div id="retrain-result" style="margin-top:12px;font-size:13px;color:var(--muted)"></div>
+</div>
+{% endif %}
+
+<!-- CONVERSATION RECORDS TO CORRECT -->
+<div class="card">
+  <div class="card-title">Recent Conversations — Review & Correct AI Predictions</div>
+  {% if records %}
+  {% for rec in records %}
+  <div class="rec-card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <span style="font-size:11px;font-family:monospace;color:var(--muted)">{{ rec.conversation_id or 'ID-'+rec.id|string }}</span>
+      <span style="font-size:11px;color:var(--muted)">{{ rec.date or '' }}</span>
+  
+    </div>
+    <div class="msg">"{{ rec.customer_message[:200] }}{% if rec.customer_message|length > 200 %}...{% endif %}"</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px">AI predicted:</div>
+    <div class="ai-row">
+      <span class="pill {{ 'pos' if rec.sentiment=='positive' else 'neg' if rec.sentiment=='negative' else 'neu' }}">{{ rec.sentiment }}</span>
+      <span class="pill info">{{ rec.emotion }}</span>
+      <span class="pill info">{{ rec.topic }}</span>
+      <span class="pill {{ 'high' if rec.escalation_level=='HIGH' else 'med' if rec.escalation_level=='MEDIUM' else 'low' }}">{{ rec.escalation_level }}</span>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin:10px 0 6px">Correct it (only change what's wrong):</div>
+    <div class="label-row">
+      <label>Sentiment:</label>
+      <select class="fix-select" id="s-{{ rec.id }}">
+        <option value="{{ rec.sentiment }}" selected>✓ {{ rec.sentiment }} (AI)</option>
+        <option value="positive">positive</option>
+        <option value="neutral">neutral</option>
+        <option value="negative">negative</option>
+      </select>
+      <label style="margin-left:8px">Emotion:</label>
+      <select class="fix-select" id="e-{{ rec.id }}">
+        <option value="{{ rec.emotion }}" selected>✓ {{ rec.emotion }} (AI)</option>
+        <option value="angry">angry</option>
+        <option value="frustrated">frustrated</option>
+        <option value="happy">happy</option>
+        <option value="satisfied">satisfied</option>
+        <option value="confused">confused</option>
+        <option value="anxious">anxious</option>
+        <option value="neutral">neutral</option>
+      </select>
+      <label style="margin-left:8px">Escalation:</label>
+      <select class="fix-select" id="esc-{{ rec.id }}">
+        <option value="{{ rec.escalation_level }}" selected>✓ {{ rec.escalation_level }} (AI)</option>
+        <option value="HIGH">HIGH</option>
+        <option value="MEDIUM">MEDIUM</option>
+        <option value="LOW">LOW</option>
+      </select>
+    </div>
+    <div class="label-row">
+      <label>Note (optional):</label>
+      <input type="text" class="form-control" id="n-{{ rec.id }}" placeholder="Why is the AI wrong here?" style="flex:1;padding:5px 10px;font-size:12px">
+    </div>
+    <button class="btn btn-primary" style="font-size:12px;padding:6px 14px" onclick="submitFeedback({{ rec.id }}, '{{ rec.conversation_id }}', `{{ rec.customer_message[:100]|replace("'","") }}`, '{{ rec.sentiment }}', '{{ rec.emotion }}', '{{ rec.topic }}', '{{ rec.escalation_level }}')">
+      ✅ Submit Correction
+    </button>
+    <span id="fb-{{ rec.id }}" style="font-size:12px;color:var(--green);margin-left:10px;display:none">Saved!</span>
+  </div>
+  {% endfor %}
+  {% else %}
+  <div style="text-align:center;padding:40px;color:var(--muted)">
+    <div style="font-size:36px;margin-bottom:12px">📭</div>
+    <div style="font-size:14px">No conversations in the database yet.</div>
+    <div style="font-size:13px;margin-top:6px">Upload a CSV from the Dashboard to populate this list.</div>
+    <a href="/" class="btn btn-primary" style="margin-top:16px;display:inline-flex">Go to Dashboard →</a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+async function submitFeedback(id, conv_id, msg, ai_sent, ai_emo, ai_topic, ai_esc){
+  const body = new FormData();
+  body.append('conversation_id', conv_id);
+  body.append('original_message', msg);
+  body.append('ai_sentiment', ai_sent);
+  body.append('correct_sentiment', document.getElementById('s-'+id).value);
+  body.append('ai_emotion', ai_emo);
+  body.append('correct_emotion', document.getElementById('e-'+id).value);
+  body.append('ai_topic', ai_topic);
+  body.append('correct_topic', ai_topic);
+  body.append('ai_escalation', ai_esc);
+  body.append('correct_escalation', document.getElementById('esc-'+id).value);
+  body.append('feedback_note', document.getElementById('n-'+id).value);
+
+  const res = await fetch('/learning/feedback', {method:'POST', body});
+  const d = await res.json();
+  if(d.status === 'ok'){
+    document.getElementById('fb-'+id).style.display = 'inline';
+    setTimeout(()=>{ document.getElementById('fb-'+id).style.display='none'; }, 3000);
+  }
+}
+
+async function retrain(){
+  const btn = event.target;
+  btn.textContent = '⏳ Applying...';
+  btn.disabled = true;
+  const res = await fetch('/learning/retrain', {method:'POST'});
+  const d = await res.json();
+  document.getElementById('retrain-result').textContent = d.message;
+  document.getElementById('retrain-result').style.color = d.status==='ok' ? 'var(--green)' : 'var(--amber)';
+  btn.textContent = '✅ Done';
+  setTimeout(()=>{ location.reload(); }, 2000);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Error {{ code }} — VoiceIQ Pro{% endblock %}
+{% block page_title %}Error {{ code }}{% endblock %}
+{% block content %}
+<div style="text-align:center;padding:60px 20px">
+  <div style="font-size:64px;margin-bottom:16px">{% if code==403 %}🔒{% elif code==404 %}🔍{% else %}⚠️{% endif %}</div>
+  <div style="font-size:24px;font-weight:700;color:#fff;margin-bottom:8px">{{ code }}</div>
+  <div style="font-size:15px;color:var(--muted);margin-bottom:24px">{{ msg }}</div>
+  <a href="/" class="btn btn-primary">← Go Home</a>
+</div>
+{% endblock %}

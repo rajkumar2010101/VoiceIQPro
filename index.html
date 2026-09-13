@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — VoiceIQ Pro{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_sub %}Upload data or load demo to begin analysis{% endblock %}
+
+{% block extra_style %}
+<style>
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+@media(max-width:700px){.hero-grid{grid-template-columns:1fr}}
+.hero-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px;transition:border-color .2s}
+.hero-card:hover{border-color:var(--accent)}
+.hero-icon{font-size:36px;margin-bottom:16px}
+.hero-card h3{font-size:16px;font-weight:600;color:#fff;margin-bottom:8px}
+.hero-card p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px}
+.upload-area{border:2px dashed var(--border);border-radius:10px;padding:18px;text-align:center;cursor:pointer;transition:border-color .2s;font-size:13px;color:var(--muted)}
+.upload-area:hover{border-color:var(--accent);color:var(--text)}
+.upload-area input{display:none}
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center}
+.stat .n{font-size:24px;font-weight:700;color:#fff;margin-bottom:3px}
+.stat .l{font-size:11px;color:var(--muted)}
+.single-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px}
+.single-box h3{font-size:15px;font-weight:600;color:#fff;margin-bottom:6px}
+.single-box p{font-size:13px;color:var(--muted);margin-bottom:16px}
+.live-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:12px 14px;color:var(--text);font-size:14px;resize:vertical;min-height:90px;transition:border-color .15s}
+.live-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+.result-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.csv-hint{font-size:12px;color:var(--muted);line-height:1.7;margin-top:10px}
+.csv-hint code{background:var(--bg3);padding:2px 6px;border-radius:4px;font-family:monospace;font-size:11px}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="stat-strip">
+  <div class="stat"><div class="n">{{ total_convs }}</div><div class="l">Conversations in DB</div></div>
+  <div class="stat"><div class="n" style="color:var(--accent)">AI</div><div class="l">Analysis Engine</div></div>
+  <div class="stat"><div class="n" style="color:var(--green)">Live</div><div class="l">Real-Time Monitor</div></div>
+  <div class="stat"><div class="n" style="color:var(--amber)">6</div><div class="l">Premium Features</div></div>
+</div>
+
+<div class="hero-grid">
+  <!-- Upload -->
+  <div class="hero-card">
+    <div class="hero-icon">📂</div>
+    <h3>Analyze Your Data</h3>
+    <p>Upload any CSV with customer conversations for instant AI analysis — sentiment, escalation risk, emotion, topics and agent performance.</p>
+    <form action="/upload" method="POST" enctype="multipart/form-data" id="uploadForm">
+      <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+        <input type="file" name="file" id="fileInput" accept=".csv" onchange="handleFile(this)">
+        <div id="uploadLabel">📁 Click to select CSV file</div>
+      </div>
+      <div class="csv-hint" style="margin-top:10px">
+        Required: <code>customer_message</code> &nbsp;|&nbsp;
+        Optional: <code>date</code> <code>agent</code> <code>channel</code> <code>csat_score</code> <code>resolved</code>
+      </div>
+      <button type="submit" class="btn btn-success" style="margin-top:14px;width:100%">🚀 Run Analysis →</button>
+    </form>
+  </div>
+
+  <!-- Demo + Quick actions -->
+  <div class="hero-card">
+    <div class="hero-icon">⚡</div>
+    <h3>Quick Start</h3>
+    <p>No data yet? Try the demo dashboard with 300 pre-loaded conversations, or explore individual features.</p>
+    <a href="/demo" class="btn btn-primary" style="width:100%;display:block;text-align:center;margin-bottom:10px">Load Demo Dashboard →</a>
+    <a href="/realtime" class="btn btn-ghost" style="width:100%;display:block;text-align:center;margin-bottom:10px">📡 Real-Time Monitor</a>
+    <a href="/learning" class="btn btn-ghost" style="width:100%;display:block;text-align:center">🧠 AI Learning Center</a>
+  </div>
+</div>
+
+<!-- Live single-message analyzer -->
+<div class="single-box">
+  <h3>🔍 Live Message Analyzer</h3>
+  <p>Type any customer message to get instant AI analysis — no upload needed. Press Ctrl+Enter to analyze.</p>
+  <textarea class="live-input" id="liveInput" placeholder="e.g. I've been waiting 3 weeks for my refund and nobody is responding!"></textarea>
+  <button class="btn btn-primary" onclick="analyzeLive()" style="margin-top:10px">Analyze →</button>
+  <div class="result-pills" id="liveResult"></div>
+</div>
+
+<script>
+function handleFile(input){
+  const label=document.getElementById('uploadLabel');
+  if(input.files[0]) label.textContent='📄 '+input.files[0].name+' — ready to analyze';
+}
+async function analyzeLive(){
+  const text=document.getElementById('liveInput').value.trim();
+  if(!text) return;
+  const div=document.getElementById('liveResult');
+  div.innerHTML='<span style="color:var(--muted);font-size:13px">Analyzing...</span>';
+  try{
+    const res=await fetch('/analyze_single',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});
+    const d=await res.json();
+    if(d.error){div.innerHTML=`<span style="color:var(--red)">${d.error}</span>`;return;}
+    const sc=d.sentiment==='positive'?'pos':d.sentiment==='negative'?'neg':'neu';
+    const ec=d.escalation_level==='HIGH'?'high':d.escalation_level==='MEDIUM'?'med':'low';
+    let html=`
+      <span class="pill ${sc}">Sentiment: ${d.sentiment.toUpperCase()} (${d.sentiment_confidence}%)</span>
+      <span class="pill info">Emotion: ${d.emotion}</span>
+      <span class="pill info">Topic: ${d.topic}</span>
+      <span class="pill ${ec}">Escalation: ${d.escalation_level} — ${d.escalation_score}/100</span>`;
+    try{
+      const aspects=JSON.parse(d.aspects||'[]');
+      if(aspects.length){
+        html+='<br><span style="font-size:12px;color:var(--muted);margin-top:8px;display:block">Aspects causing sentiment:</span>';
+        aspects.forEach(a=>{
+          const ac=a.sentiment==='positive'?'pos':a.sentiment==='negative'?'neg':'neu';
+          html+=`<span class="pill ${ac}">${a.aspect}: ${a.sentiment}</span>`;
+        });
+      }
+    }catch(e){}
+    div.innerHTML=html;
+  }catch(e){div.innerHTML='<span style="color:var(--red)">Error — is the server running?</span>';}
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('liveInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey)analyzeLive();});
+});
+</script>
+{% endblock %}

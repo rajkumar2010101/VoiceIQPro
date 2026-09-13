@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+{% block title %}Real-Time Monitor — VoiceIQ Pro{% endblock %}
+{% block page_title %}Real-Time Operations{% endblock %}
+{% block page_sub %}Live contact center metrics · Auto-refreshes every 5 seconds{% endblock %}
+
+{% block extra_style %}
+<style>
+.live-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--green);background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);padding:3px 10px;border-radius:20px;margin-bottom:18px}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:800px){.metric-grid{grid-template-columns:1fr 1fr}}
+.m-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;transition:border-color .3s}
+.m-card.alert-active{border-color:var(--red)!important;animation:flash-border 2s infinite}
+@keyframes flash-border{0%,100%{border-color:rgba(239,68,68,.4)}50%{border-color:rgba(239,68,68,.9)}}
+.m-card .m-val{font-size:32px;font-weight:800;color:#fff;margin:6px 0}
+.m-card .m-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.m-card .m-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.agent-table-wrap{overflow-x:auto}
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.status-dot.on-call{background:#22c55e}
+.status-dot.available{background:#3b82f6}
+.status-dot.acw{background:#f59e0b}
+.status-dot.aux{background:#a78bfa}
+.queue-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.queue-row:last-child{border-bottom:none}
+.q-bar{flex:1;margin:0 14px;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.q-fill{height:100%;border-radius:3px;transition:width .5s}
+.alert-list{min-height:40px}
+.al-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:13px;margin-bottom:6px}
+.al-item.critical{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5}
+.al-item.warning{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#fde68a}
+.al-item.info{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
+.no-alert{font-size:13px;color:var(--muted);text-align:center;padding:16px;border:1px dashed var(--border);border-radius:8px}
+.rec-item{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:10px}
+.rec-item .rec-text{font-size:13px;color:var(--text);margin-bottom:6px;line-height:1.6}
+.rec-item .rec-meta{display:flex;gap:8px}
+.threshold-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.threshold-row:last-child{border-bottom:none}
+.t-name{flex:1;color:var(--text)}
+.t-op{font-family:monospace;font-size:11px;background:var(--bg3);padding:2px 7px;border-radius:4px;color:var(--accent)}
+.t-input{width:80px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-size:12px;text-align:center}
+.t-toggle{cursor:pointer;width:38px;height:20px;border-radius:10px;transition:background .2s;border:none;position:relative;flex-shrink:0}
+.t-toggle.on{background:var(--green)}
+.t-toggle.off{background:var(--bg4)}
+.source-chip{font-size:11px;background:rgba(99,102,241,.15);color:var(--accent);padding:3px 10px;border-radius:20px;border:1px solid rgba(99,102,241,.25)}
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+  <div class="live-badge"><div class="pulse"></div> LIVE — Auto-updating</div>
+  <div id="updateTime" style="font-size:12px;color:var(--muted)">Last update: connecting...</div>
+  {% if connected_crm %}
+  <span class="source-chip">🔌 {{ connected_crm.name }}</span>
+  {% else %}
+  <span class="source-chip" style="background:rgba(245,158,11,.1);color:var(--amber);border-color:rgba(245,158,11,.25)">⚡ Simulated data — <a href="/integrations" style="color:var(--accent)">Connect API</a></span>
+  {% endif %}
+</div>
+
+<!-- ACTIVE ALERTS -->
+<div id="alertList" class="alert-list" style="margin-bottom:18px">
+  <div class="no-alert">🟢 All metrics within thresholds — monitoring...</div>
+</div>
+
+<!-- METRICS STRIP -->
+<div class="metric-grid">
+  <div class="m-card" id="mc-waiting">
+    <div class="m-label">Calls Waiting</div>
+    <div class="m-val" id="m-waiting">—</div>
+    <div class="m-sub">in queue now</div>
+  </div>
+  <div class="m-card" id="mc-asa">
+    <div class="m-label">ASA</div>
+    <div class="m-val" id="m-asa">—</div>
+    <div class="m-sub">avg speed to answer</div>
+  </div>
+  <div class="m-card" id="mc-aht">
+    <div class="m-label">AHT</div>
+    <div class="m-val" id="m-aht">—</div>
+    <div class="m-sub">avg handle time</div>
+  </div>
+  <div class="m-card" id="mc-sl">
+    <div class="m-label">Service Level</div>
+    <div class="m-val" id="m-sl">—</div>
+    <div class="m-sub">answered in 30s</div>
+  </div>
+  <div class="m-card">
+    <div class="m-label">Agents Available</div>
+    <div class="m-val green" id="m-avail">—</div>
+    <div class="m-sub">ready to take calls</div>
+  </div>
+  <div class="m-card">
+    <div class="m-label">On Call</div>
+    <div class="m-val blue" id="m-oncall">—</div>
+    <div class="m-sub">active conversations</div>
+  </div>
+  <div class="m-card">
+    <div class="m-label">In AUX</div>
+    <div class="m-val amber" id="m-aux">—</div>
+    <div class="m-sub">unavailable</div>
+  </div>
+  <div class="m-card">
+    <div class="m-label">Abandonment</div>
+    <div class="m-val red" id="m-abandon">—</div>
+    <div class="m-sub">calls abandoned</div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- QUEUE BREAKDOWN -->
+  <div class="card">
+    <div class="card-title">Queue Breakdown</div>
+    <div id="queueList"><div style="color:var(--muted);font-size:13px">Loading...</div></div>
+  </div>
+
+  <!-- GENAI RECOMMENDATIONS -->
+  <div class="card">
+    <div class="card-title">🤖 GenAI SL Recommendations</div>
+    <div id="recoList"><div style="color:var(--muted);font-size:13px">Generating...</div></div>
+  </div>
+</div>
+
+<!-- AGENT STATES -->
+<div class="card" style="margin-bottom:20px">
+  <div class="card-title">Agent Real-Time States</div>
+  <div class="agent-table-wrap">
+    <table>
+      <thead>
+        <tr><th>Agent</th><th>Status</th><th>AUX Code</th><th>AHT (this session)</th><th>Calls Handled</th><th>CSAT</th><th>Login Time</th></tr>
+      </thead>
+      <tbody id="agentStateBody">
+        <tr><td colspan="7" style="color:var(--muted);text-align:center;padding:20px">Loading agent states...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- THRESHOLD SETTINGS -->
+{% if user.role == 'owner' %}
+<div class="card">
+  <div class="card-title">⚙️ Alert Threshold Settings</div>
+  <div id="thresholdRows">
+    {% for t in thresholds %}
+    <div class="threshold-row" id="tr-{{ t.id }}">
+      <div class="t-name">{{ t.alert_label }}</div>
+      <span class="t-op">{{ t.operator }}</span>
+      <input class="t-input" type="number" id="tv-{{ t.id }}" value="{{ t.threshold_value }}" step="1">
+      <button class="t-toggle {{ 'on' if t.enabled else 'off' }}" id="tt-{{ t.id }}"
+        onclick="toggleThreshold({{ t.id }}, this)"></button>
+      <span style="font-size:11px;color:var(--muted);min-width:50px">{{ t.severity }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  <button class="btn btn-primary" onclick="saveThresholds()" style="margin-top:14px">💾 Save Thresholds</button>
+</div>
+{% endif %}
+
+<script>
+const POLL_INTERVAL = 5000;
+
+function fmtSec(s){ return s < 60 ? s+'s' : Math.floor(s/60)+'m '+( s%60)+'s'; }
+
+function statusClass(status){
+  if(status.includes('On Call')) return 'on-call';
+  if(status.includes('Available')) return 'available';
+  if(status.includes('ACW')) return 'acw';
+  return 'aux';
+}
+
+async function poll(){
+  try{
+    const res = await fetch('/api/realtime_data');
+    const d = await res.json();
+
+    // Metrics
+    document.getElementById('m-waiting').textContent = d.calls_waiting;
+    document.getElementById('m-asa').textContent = fmtSec(d.asa_sec);
+    document.getElementById('m-aht').textContent = fmtSec(d.aht_sec);
+    document.getElementById('m-sl').textContent = d.service_level + '%';
+    document.getElementById('m-avail').textContent = d.agents_available;
+    document.getElementById('m-oncall').textContent = d.agents_on_call;
+    document.getElementById('m-aux').textContent = d.agents_in_aux;
+    document.getElementById('m-abandon').textContent = d.abandonment_rate + '%';
+    document.getElementById('updateTime').textContent = 'Last update: ' + d.timestamp + ' (' + d.source + ')';
+
+    // Color metric cards based on threshold breach
+    colorMetric('mc-sl', d.service_level, 80, '<');
+    colorMetric('mc-waiting', d.calls_waiting, 10, '>');
+    colorMetric('mc-asa', d.asa_sec, 30, '>');
+    colorMetric('mc-aht', d.aht_sec, 480, '>');
+
+    // Active alerts
+    const alertDiv = document.getElementById('alertList');
+    if(d.alerts && d.alerts.length > 0){
+      alertDiv.innerHTML = d.alerts.map(a =>
+        `<div class="al-item ${a.severity}">
+          ${ a.severity==='critical' ? '🚨' : a.severity==='warning' ? '⚠️' : 'ℹ️' }
+          <strong>${a.label}</strong> — Current: <strong>${a.value}</strong>
+        </div>`
+      ).join('');
+    } else {
+      alertDiv.innerHTML = '<div class="no-alert">🟢 All metrics within defined thresholds</div>';
+    }
+
+    // Queue breakdown
+    const qDiv = document.getElementById('queueList');
+    qDiv.innerHTML = (d.queues || []).map(q => {
+      const pct = Math.min(100, q.waiting * 10);
+      const color = q.waiting > 6 ? 'var(--red)' : q.waiting > 3 ? 'var(--amber)' : 'var(--green)';
+      return `<div class="queue-row">
+        <span style="font-size:13px;color:var(--text);min-width:140px">${q.name}</span>
+        <div class="q-bar"><div class="q-fill" style="width:${pct}%;background:${color}"></div></div>
+        <span style="font-size:13px;font-weight:600;color:${color};min-width:30px;text-align:right">${q.waiting}</span>
+        <span style="font-size:11px;color:var(--muted);margin-left:10px;min-width:60px">oldest: ${fmtSec(q.oldest_sec)}</span>
+      </div>`;
+    }).join('');
+
+    // GenAI recommendations (static per session, update on each poll)
+    const rDiv = document.getElementById('recoList');
+    if(d.alerts && d.alerts.length > 0){
+      const rec = genReco(d);
+      rDiv.innerHTML = rec.map(r =>
+        `<div class="rec-item">
+          <div class="rec-text">${r.text}</div>
+          <div class="rec-meta">
+            <span class="pill ${r.urgency==='critical'?'high':r.urgency==='warning'?'med':'low'}">${r.urgency.toUpperCase()}</span>
+            <span class="pill info">${r.action}</span>
+          </div>
+        </div>`
+      ).join('');
+    } else {
+      rDiv.innerHTML = '<div class="rec-item"><div class="rec-text">✅ All metrics in range. Maintain current staffing. Monitor for demand shifts.</div></div>';
+    }
+
+    // Agent states
+    const tbody = document.getElementById('agentStateBody');
+    tbody.innerHTML = (d.agents || []).map(a => {
+      const sc = statusClass(a.status);
+      return `<tr>
+        <td><strong>${a.name}</strong></td>
+        <td><span class="status-dot ${sc}"></span>${a.status}</td>
+        <td>${a.aux_code !== '—' ? `<span class="pill info" style="font-size:10px">${a.aux_code}</span>` : '—'}</td>
+        <td>${fmtSec(a.aht_sec)}</td>
+        <td>${a.calls_handled}</td>
+        <td>${a.csat} ⭐</td>
+        <td style="font-size:12px;color:var(--muted)">${a.login_time}</td>
+      </tr>`;
+    }).join('');
+
+  } catch(e){ console.error('Poll error:', e); }
+}
+
+function colorMetric(id, val, threshold, op){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const breached = (op === '>' && val > threshold) || (op === '<' && val < threshold);
+  el.classList.toggle('alert-active', breached);
+}
+
+function genReco(d){
+  const recs = [];
+  if(d.calls_waiting > 10) recs.push({text:'🚨 Queue critical: '+d.calls_waiting+' calls waiting. Deploy backup agents or enable overflow routing now.',urgency:'critical',action:'Staff Reallocation'});
+  if(d.service_level < 80) recs.push({text:'📉 Service level at '+d.service_level+'% — below 80% target. Reduce AUX time and return agents to available state.',urgency:'critical',action:'SL Recovery'});
+  if(d.asa_sec > 40) recs.push({text:'⏱️ ASA is '+fmtSec(d.asa_sec)+'. Move agents from ACW to available. Consider AHT coaching to shorten wrap time.',urgency:'warning',action:'ASA Improvement'});
+  if(d.agents_in_aux > d.agents_available) recs.push({text:'⚠️ More agents in AUX ('+d.agents_in_aux+') than available ('+d.agents_available+'). Recall AUX agents.',urgency:'warning',action:'AUX Review'});
+  if(!recs.length) recs.push({text:'✅ Operations balanced. Consider proactive warm transfers on high-escalation calls to senior agents.',urgency:'info',action:'Maintain'});
+  return recs;
+}
+
+function toggleThreshold(id, btn){
+  btn.classList.toggle('on'); btn.classList.toggle('off');
+}
+
+async function saveThresholds(){
+  const rows = document.querySelectorAll('[id^="tr-"]');
+  const thresholds = [];
+  rows.forEach(row => {
+    const id = row.id.replace('tr-','');
+    const val = document.getElementById('tv-'+id)?.value;
+    const enabled = document.getElementById('tt-'+id)?.classList.contains('on');
+    if(id && val) thresholds.push({id:parseInt(id), value:parseFloat(val), enabled});
+  });
+  const res = await fetch('/settings/thresholds', {method:'POST',
+    headers:{'Content-Type':'application/json'}, body:JSON.stringify({thresholds})});
+  const d = await res.json();
+  alert(d.message);
+}
+
+// Start polling
+poll();
+setInterval(poll, POLL_INTERVAL);
+</script>
+{% endblock %}
